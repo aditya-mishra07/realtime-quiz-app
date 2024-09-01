@@ -70,7 +70,9 @@ function addQuestion(data) {
 }
 function getAllQuizModel() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.quiz.findMany();
+        return yield prisma.quiz.findMany({
+            include: { questions: true },
+        });
     });
 }
 function getAllQuestionsModel() {

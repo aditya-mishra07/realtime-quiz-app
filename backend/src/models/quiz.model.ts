@@ -52,7 +52,9 @@ async function addQuestion(data: any) {
 }
 
 async function getAllQuizModel() {
-  return await prisma.quiz.findMany();
+  return await prisma.quiz.findMany({
+    include: { questions: true },
+  });
 }
 async function getAllQuestionsModel() {
   return await prisma.question.findMany({
