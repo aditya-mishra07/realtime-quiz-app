@@ -1,9 +1,9 @@
 import {
-  addQuestion,
   updateQuizModel,
   createQuizModel,
   getAllQuizModel,
   getAllQuestionsModel,
+  deleteAllModel,
 } from "../models/quiz.model";
 
 const createQuiz = async (req: any, res: any) => {
@@ -18,10 +18,7 @@ const updateQuiz = async (req: any, res: any) => {
   const data = req.body;
   const { id } = req.params;
   const numericId = parseInt(id, 10);
-  // const question = await addQuestion(data);
-  // if (!question) {
-  //   res.status(411).json({ msg: "Wrong input- Question" });
-  // }
+
   const quiz = await updateQuizModel(numericId, data);
 
   if (!quiz) {
@@ -45,4 +42,12 @@ const getAllQuiz = async (req: any, res: any) => {
   res.status(200).json(quizes);
 };
 
-export { createQuiz, updateQuiz, getAllQuiz, getAllQuestions };
+const deleteAll = async (req: any, res: any) => {
+  const response = await deleteAllModel();
+  if (!response) {
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+  res.status(200).json({ msg: "Deleted All the Data" });
+};
+
+export { createQuiz, updateQuiz, getAllQuiz, getAllQuestions, deleteAll };

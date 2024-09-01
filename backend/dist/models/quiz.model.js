@@ -15,6 +15,7 @@ exports.updateQuizModel = updateQuizModel;
 exports.getAllQuizModel = getAllQuizModel;
 exports.getQuestionsByIdModel = getQuestionsByIdModel;
 exports.getAllQuestionsModel = getAllQuestionsModel;
+exports.deleteAllModel = deleteAllModel;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createQuizModel(title) {
@@ -88,5 +89,13 @@ function getQuestionsByIdModel(quizId) {
             where: { quizId: quizId },
             include: { options: true },
         });
+    });
+}
+function deleteAllModel() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield prisma.option.deleteMany();
+        yield prisma.question.deleteMany();
+        yield prisma.user.deleteMany();
+        return yield prisma.quiz.deleteMany();
     });
 }

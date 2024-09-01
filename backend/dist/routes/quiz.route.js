@@ -10,4 +10,5 @@ router.post("/createQuiz", quiz_controller_1.createQuiz);
 router.put("/updateQuiz/:id", quiz_controller_1.updateQuiz);
 router.get("/getAllQuiz", quiz_controller_1.getAllQuiz);
 router.get("/getAllQuestions", quiz_controller_1.getAllQuestions);
+router.delete("/deleteAll", quiz_controller_1.deleteAll);
 exports.default = router;

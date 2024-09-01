@@ -69,6 +69,13 @@ async function getQuestionsByIdModel(quizId: number) {
   });
 }
 
+async function deleteAllModel() {
+  await prisma.option.deleteMany();
+  await prisma.question.deleteMany();
+  await prisma.user.deleteMany();
+  return await prisma.quiz.deleteMany();
+}
+
 export {
   createQuizModel,
   addQuestion,
@@ -76,4 +83,5 @@ export {
   getAllQuizModel,
   getQuestionsByIdModel,
   getAllQuestionsModel,
+  deleteAllModel,
 };

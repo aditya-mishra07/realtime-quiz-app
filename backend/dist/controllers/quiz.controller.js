@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllQuestions = exports.getAllQuiz = exports.updateQuiz = exports.createQuiz = void 0;
+exports.deleteAll = exports.getAllQuestions = exports.getAllQuiz = exports.updateQuiz = exports.createQuiz = void 0;
 const quiz_model_1 = require("../models/quiz.model");
 const createQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title } = req.body;
@@ -45,3 +45,11 @@ const getAllQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json(quizes);
 });
 exports.getAllQuiz = getAllQuiz;
+const deleteAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield (0, quiz_model_1.deleteAllModel)();
+    if (!response) {
+        res.status(500).json({ msg: "Internal Server Error" });
+    }
+    res.status(200).json({ msg: "Deleted All the Data" });
+});
+exports.deleteAll = deleteAll;

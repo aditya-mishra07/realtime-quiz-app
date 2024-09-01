@@ -20,15 +20,25 @@ enum AnswerNum {
   FOUR
 }
 
+enum State {
+  not_started
+  question
+  leaderboard
+  ended
+}
+
 model User {
   id Int @id @default(autoincrement())
   username String @unique
-  quizId Int
-  quiz Quiz @relation(fields: [quizId], references: [id])
+  points Int
+  quizId Int?
+  quiz Quiz? @relation(fields: [quizId], references: [id])
 }
 
 model Quiz { 
   id Int @id @default(autoincrement())
+  hasStarted Boolean @default(false)
+  currentState State @default(not_started)
   title String
   users User[]
   questions Question[]
@@ -38,8 +48,8 @@ model Option {
   id Int @id @default(autoincrement())
   text String
   votes Int @default(0)
-  questionId Int
-  question Question @relation(fields: [questionId], references: [id])
+  questionId Int?
+  question Question? @relation(fields: [questionId], references: [id])
 
 }
 
@@ -48,8 +58,8 @@ model Question {
   text String
   options Option[]
   answer AnswerNum @default(ONE)
-  quizId Int
-  quiz Quiz @relation(fields: [quizId], references: [id])
+  quizId Int?
+  quiz Quiz? @relation(fields: [quizId], references: [id])
 }
 
 
