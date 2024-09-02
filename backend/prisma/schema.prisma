@@ -22,6 +22,7 @@ enum AnswerNum {
 
 enum State {
   not_started
+  waiting
   question
   leaderboard
   ended
@@ -30,7 +31,7 @@ enum State {
 model User {
   id Int @id @default(autoincrement())
   username String @unique
-  points Int
+  points Int @default(0)
   quizId Int?
   quiz Quiz? @relation(fields: [quizId], references: [id])
 }

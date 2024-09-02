@@ -21,10 +21,6 @@ const updateQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const data = req.body;
     const { id } = req.params;
     const numericId = parseInt(id, 10);
-    // const question = await addQuestion(data);
-    // if (!question) {
-    //   res.status(411).json({ msg: "Wrong input- Question" });
-    // }
     const quiz = yield (0, quiz_model_1.updateQuizModel)(numericId, data);
     if (!quiz) {
         res.status(411).json({ msg: "Wrong input- Quiz" });
