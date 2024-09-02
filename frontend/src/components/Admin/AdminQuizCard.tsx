@@ -1,3 +1,4 @@
+import { Quiz } from "@/types";
 import { Button } from "../ui/button";
 export type Props = {
   id: number | null;

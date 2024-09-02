@@ -8,6 +8,7 @@ export default function WaitRoom() {
             <p className=" font-medium">4</p>
           </div>
         </div>
+        <div className=""></div>
       </div>
     </div>
   );
