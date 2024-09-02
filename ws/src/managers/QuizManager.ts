@@ -11,7 +11,8 @@ export class QuizManager {
     this.quizes.push(new Quiz(roomId));
   }
 
-  checkExistingQuiz(roomId: number) {
+  //?
+  existingQuiz(roomId: number) {
     const existing = this.quizes.find((quiz) => quiz.getRoomId() === roomId);
     return existing;
   }

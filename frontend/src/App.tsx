@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import { User } from "./Pages/User";
 import { Admin } from "./Pages/Admin";
+import WaitRoom from "./Pages/WaitRoom";
 
 function App() {
   const router = createBrowserRouter([
@@ -12,6 +13,11 @@ function App() {
     {
       path: "/admin",
       element: <Admin />,
+    },
+
+    {
+      path: "/waiting_room",
+      element: <WaitRoom />,
     },
   ]);
   return (

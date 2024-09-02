@@ -16,6 +16,7 @@ export class UserManager {
     socket.on("message", (data) => {
       const message = JSON.parse(data.toString());
       if (message.type === "admin_joined") {
+        console.log("joined");
         if (this.quizManager.existingQuiz(message.roomId)) {
           socket.send(
             JSON.stringify({
@@ -24,11 +25,7 @@ export class UserManager {
           );
         } else {
           this.quizManager.addQuiz(message.roomId);
-          socket.send(
-            JSON.stringify({
-              type: "waiting",
-            })
-          );
+          console.log("Quiz created");
         }
       }
     });
