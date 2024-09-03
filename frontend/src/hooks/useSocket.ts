@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const useSocket = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -6,11 +6,21 @@ export const useSocket = () => {
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8080");
 
-    ws.onopen = () => setSocket(ws);
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      setSocket(ws);
+    };
 
-    ws.onclose = () => setSocket(null);
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+      setSocket(null);
+    };
+
+    // Clean up function
     return () => {
-      ws.close();
+      if (ws.readyState === 1) {
+        ws.close();
+      }
     };
   }, []);
 

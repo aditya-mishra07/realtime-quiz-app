@@ -1,28 +1,23 @@
-import { Quiz } from "@/types";
 import { Button } from "../ui/button";
 export type Props = {
   id: number | null;
   title: string | undefined;
-  setAdminJoined: React.Dispatch<React.SetStateAction<boolean>>;
   setRoomId: React.Dispatch<React.SetStateAction<number | null>>;
   socket: WebSocket | null;
 };
 
-export default function AdminQuizCard({
-  id,
-  title,
-  setAdminJoined,
-  setRoomId,
-  socket,
-}: Props) {
+export default function AdminQuizCard({ id, title, setRoomId, socket }: Props) {
   const handleJoin = () => {
-    setRoomId(id);
-    setAdminJoined(true);
-    socket?.send(
-      JSON.stringify({
-        type: "admin_joined",
-      })
-    );
+    if (socket) {
+      setRoomId(id);
+      console.log("hello");
+      socket?.send(
+        JSON.stringify({
+          type: "admin_joined",
+          roomId: id,
+        })
+      );
+    }
   };
   return (
     <div className=" flex flex-col my-5">

@@ -2,18 +2,28 @@ import { Quiz } from "../Quiz";
 
 export class QuizManager {
   private quizes: Quiz[];
+  private static instance: QuizManager;
 
   constructor() {
     this.quizes = [];
   }
 
-  addQuiz(roomId: number) {
-    this.quizes.push(new Quiz(roomId));
+  static getInstance(): QuizManager {
+    if (!QuizManager.instance) {
+      QuizManager.instance = new QuizManager();
+    }
+    return QuizManager.instance;
   }
 
-  //?
-  existingQuiz(roomId: number) {
-    const existing = this.quizes.find((quiz) => quiz.getRoomId() === roomId);
-    return existing;
+  getQuiz(roomId: number) {
+    return this.quizes.find((x) => x.getRoomId() === roomId) ?? null;
+  }
+
+  addQuiz(roomId: number) {
+    if (this.getQuiz(roomId)) {
+      return;
+    }
+    const quiz = new Quiz(roomId);
+    this.quizes.push(quiz);
   }
 }

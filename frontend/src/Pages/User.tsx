@@ -3,21 +3,55 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useSocket } from "../hooks/useSocket.ts";
+import WaitRoom from "./WaitRoom";
 
 export const User = () => {
   const [username, setUsername] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
-  const [code, setCode] = useState<string>("");
-  const [storeInDB, setStoreInDB] = useState<boolean>(false);
+  const [code, setCode] = useState<number | null>(null);
+  // const [storeInDB, setStoreInDB] = useState<boolean>(false);
 
-  useEffect(() => {}, [storeInDB]);
+  const socket = useSocket();
 
-  const handleSubmit = () => {
-    if (storeInDB === false) setStoreInDB(true);
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
 
-    setStoreInDB(false);
+    const handleSocketMessage = (event: MessageEvent) => {
+      const message = JSON.parse(event.data);
+      switch (message.type) {
+        case "waiting_room":
+          setJoined(true);
+          break;
+        case "quiz_exists":
+          console.log("quiz exists");
+          break;
+      }
+    };
 
-    setJoined(true);
+    socket.addEventListener("message", handleSocketMessage);
+
+    return () => {
+      socket.removeEventListener("message", handleSocketMessage);
+    };
+  }, [socket]);
+
+  // useEffect(() => {}, [storeInDB]);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    // if (storeInDB === false) setStoreInDB(true);
+
+    // setStoreInDB(false);
+    event.preventDefault();
+    socket?.send(
+      JSON.stringify({
+        type: "player_joined",
+        roomId: code,
+        username: username,
+      })
+    );
   };
 
   if (!joined) {
@@ -43,7 +77,7 @@ export const User = () => {
                   <Input
                     id="name"
                     placeholder="Enter the RoomId"
-                    onChange={(e) => setCode(e.target.value)}
+                    onChange={(e) => setCode(parseInt(e.target.value))}
                   />
                 </div>
                 <Button type="submit">Join Room</Button>
@@ -54,4 +88,6 @@ export const User = () => {
       </div>
     );
   }
+
+  return <WaitRoom socket={socket} />;
 };
