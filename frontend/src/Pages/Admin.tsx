@@ -9,6 +9,7 @@ export const Admin = () => {
   const [data, setData] = useState<Quiz[] | null>(null);
   const [roomId, setRoomId] = useState<number | null>(null);
   const [adminJoined, setAdminJoined] = useState<boolean>(false);
+  const [activeUsers, setActiveUsers] = useState<number | null>(null);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
 
   const socket = useSocket();
@@ -35,7 +36,7 @@ export const Admin = () => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case "waiting_room":
-          console.log("in waiting room");
+          setActiveUsers(message.activeUsers);
           setAdminJoined(true);
           break;
         case "quiz_exists":
@@ -91,5 +92,5 @@ export const Admin = () => {
     );
   }
 
-  return <WaitRoom socket={socket} />;
+  return <WaitRoom socket={socket} activeUsers={activeUsers} />;
 };

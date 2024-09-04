@@ -10,6 +10,7 @@ export const User = () => {
   const [username, setUsername] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
   const [code, setCode] = useState<number | null>(null);
+  const [activeUsers, setActiveUsers] = useState<number | null>(null);
   // const [storeInDB, setStoreInDB] = useState<boolean>(false);
 
   const socket = useSocket();
@@ -23,10 +24,13 @@ export const User = () => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case "waiting_room":
+          setActiveUsers(message.activeUsers);
           setJoined(true);
           break;
         case "quiz_exists":
           console.log("quiz exists");
+          break;
+        default:
           break;
       }
     };
@@ -89,5 +93,5 @@ export const User = () => {
     );
   }
 
-  return <WaitRoom socket={socket} />;
+  return <WaitRoom socket={socket} activeUsers={activeUsers} />;
 };

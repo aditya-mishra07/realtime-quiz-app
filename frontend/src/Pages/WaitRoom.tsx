@@ -3,11 +3,11 @@ import "./customCss.css";
 
 type Props = {
   socket: WebSocket | null;
+  activeUsers: number | null;
 };
 
-export default function WaitRoom({ socket }: Props) {
+export default function WaitRoom({ socket, activeUsers }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
-  const [players, setPlayers] = useState<number>(0);
 
   useEffect(() => {
     if (!socket) {
@@ -17,9 +17,8 @@ export default function WaitRoom({ socket }: Props) {
 
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
-      console.log(message);
       if (message.type === "waiting_room") {
-        setPlayers(message.activeUsers);
+        console.log(message.activeUsers);
       }
     };
 
@@ -48,7 +47,13 @@ export default function WaitRoom({ socket }: Props) {
           </div>
         </div>
         <div className="flex items-center justify-center mt-16">
-          <div className=" text-2xl mr-5">{players} players are ready!</div>
+          {activeUsers === 1 ? (
+            <div className=" text-2xl mr-5">{activeUsers} player is ready!</div>
+          ) : (
+            <div className=" text-2xl mr-5">
+              {activeUsers} players are ready!
+            </div>
+          )}
         </div>
       </div>
     </div>
