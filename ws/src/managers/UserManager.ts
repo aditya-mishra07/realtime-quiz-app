@@ -54,18 +54,18 @@ export class UserManager {
           id: message.roomId,
         })
       );
+
+      // socket.on("message", (data) => {});
     }
   }
 
   userHandler(socket: WebSocket, message: Message) {
     if (this.quizManager.getQuiz(message.roomId)) {
       this.addUserToQuiz(message);
-      socket.send(
-        JSON.stringify({
-          type: "waiting_room",
-          activeUsers: this.getActiveUsers(message),
-        })
-      );
+      this.broadcast({
+        type: "waiting_room",
+        activeUsers: this.getActiveUsers(message),
+      });
     } else {
       console.log("incorrect id");
       socket.send(

@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { Question, User, Answer } from "./types";
+import { Question, User, Answer, state } from "./types";
 
 export class Quiz {
   private roomId: number;
@@ -7,6 +7,7 @@ export class Quiz {
   private questions: Question[];
   private users: User[];
   private currentQuestion: number;
+  private currentState: state;
 
   constructor(roomId: number) {
     this.roomId = roomId;
@@ -14,6 +15,17 @@ export class Quiz {
     this.questions = [];
     this.users = [];
     this.currentQuestion = 0;
+    this.currentState = "not_started";
+    this.currentQuestion = 0;
+  }
+
+  public start() {
+    this.currentState = "question";
+    return this.questions[this.currentQuestion];
+  }
+
+  public setCurrentState(currentState: state) {
+    this.currentState = currentState;
   }
 
   public getRoomId() {

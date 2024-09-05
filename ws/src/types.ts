@@ -25,3 +25,5 @@ export interface Question {
     text: string;
   }[];
 }
+
+export type state = "not_started" | "question" | "leaderboard" | "ended";
