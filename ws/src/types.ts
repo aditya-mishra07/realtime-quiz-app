@@ -19,11 +19,20 @@ export enum Answer {
 }
 
 export interface Question {
+  id: number;
   text: string;
   answer: Answer;
+  startTime: number;
   options: {
     text: string;
   }[];
+  submissions: Submission[];
 }
 
+export interface Submission {
+  questionId: number;
+  userId: string;
+  isCorrect: boolean;
+  optionSelected: Answer;
+}
 export type state = "not_started" | "question" | "leaderboard" | "ended";
