@@ -7,8 +7,10 @@ export interface User {
 export interface Message {
   roomId: number;
   userId?: string;
-  payload?: Question[];
+  questions?: Question[];
   username?: string;
+  users?: User[];
+  submissions?: Submission[];
 }
 
 export enum Answer {
@@ -31,8 +33,8 @@ export interface Question {
 
 export interface Submission {
   questionId: number;
-  userId: string;
-  isCorrect: boolean;
-  optionSelected: Answer;
+  userId?: string;
+  isCorrect?: boolean;
+  optionSelected?: Answer;
 }
 export type state = "not_started" | "question" | "leaderboard" | "ended";
