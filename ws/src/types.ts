@@ -5,12 +5,13 @@ export interface User {
 }
 
 export interface Message {
+  type: string;
   roomId: number;
   userId?: string;
   questions?: Question[];
   username?: string;
   users?: User[];
-  submissions?: Submission[];
+  submissions?: Submission;
 }
 
 export enum Answer {
@@ -33,8 +34,8 @@ export interface Question {
 
 export interface Submission {
   questionId: number;
-  userId?: string;
+  userId: string;
   isCorrect?: boolean;
-  optionSelected?: Answer;
+  optionSelected: Answer;
 }
 export type state = "not_started" | "question" | "leaderboard" | "ended";

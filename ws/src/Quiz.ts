@@ -63,16 +63,22 @@ export class Quiz {
 
   public next() {}
 
-  public getQuestion(id: number) {
-    return this.questions.find((question) => question.id === id);
+  public getQuestions() {
+    this.questions.forEach((question) => {
+      console.log(question);
+    });
   }
+
   public submit(submission: Submission) {
-    const question = this.getQuestion(submission.questionId);
+    const question = this.questions.find(
+      (question) => question.id === submission.questionId
+    );
     const user = this.users.find((user) => user.userId === submission.userId);
     if (!user || !question) {
       console.log("the user or the question doesn't exist");
       return;
     }
+
     question?.submissions.push({
       questionId: submission.questionId,
       userId: submission.userId,

@@ -4,14 +4,16 @@ import {
   getAllQuizModel,
   getAllQuestionsModel,
   deleteAllModel,
+  getQuizByIdModel,
+  getQuestionsByIdModel,
 } from "../models/quiz.model";
 
 const createQuiz = async (req: any, res: any) => {
   const { title } = req.body;
 
-  const quiz = createQuizModel(title);
+  const quiz = await createQuizModel(title);
 
-  res.status(200).json(quiz);
+  res.status(200).json({ id: quiz.id });
 };
 
 const updateQuiz = async (req: any, res: any) => {
@@ -42,6 +44,18 @@ const getAllQuiz = async (req: any, res: any) => {
   res.status(200).json(quizes);
 };
 
+const getQuizById = async (req: any, res: any) => {
+  const id = parseInt(req.params.id);
+  const quiz = await getQuizByIdModel(id);
+  res.status(200).json(quiz);
+};
+
+const getQuestionsById = async (req: any, res: any) => {
+  const id = parseInt(req.params.id);
+  const questions = await getQuestionsByIdModel(id);
+  res.status(200).json(questions);
+};
+
 const deleteAll = async (req: any, res: any) => {
   const response = await deleteAllModel();
   if (!response) {
@@ -50,4 +64,12 @@ const deleteAll = async (req: any, res: any) => {
   res.status(200).json({ msg: "Deleted All the Data" });
 };
 
-export { createQuiz, updateQuiz, getAllQuiz, getAllQuestions, deleteAll };
+export {
+  createQuiz,
+  updateQuiz,
+  getAllQuiz,
+  getAllQuestions,
+  deleteAll,
+  getQuizById,
+  getQuestionsById,
+};

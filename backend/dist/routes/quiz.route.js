@@ -9,6 +9,8 @@ const router = express_1.default.Router();
 router.post("/createQuiz", quiz_controller_1.createQuiz);
 router.put("/updateQuiz/:id", quiz_controller_1.updateQuiz);
 router.get("/getAllQuiz", quiz_controller_1.getAllQuiz);
+router.get("/getQuizById/:id", quiz_controller_1.getQuizById);
+router.get("/getQuestionsById/:id", quiz_controller_1.getQuestionsById);
 router.get("/getAllQuestions", quiz_controller_1.getAllQuestions);
 router.delete("/deleteAll", quiz_controller_1.deleteAll);
 exports.default = router;

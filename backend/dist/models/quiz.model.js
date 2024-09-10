@@ -16,6 +16,7 @@ exports.getAllQuizModel = getAllQuizModel;
 exports.getQuestionsByIdModel = getQuestionsByIdModel;
 exports.getAllQuestionsModel = getAllQuestionsModel;
 exports.deleteAllModel = deleteAllModel;
+exports.getQuizByIdModel = getQuizByIdModel;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createQuizModel(title) {
@@ -72,6 +73,14 @@ function addQuestion(data) {
 function getAllQuizModel() {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma.quiz.findMany({
+            include: { questions: true },
+        });
+    });
+}
+function getQuizByIdModel(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma.quiz.findMany({
+            where: { id: id },
             include: { questions: true },
         });
     });

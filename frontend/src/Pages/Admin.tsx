@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Quiz } from "@/types";
+import { Question, Quiz } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WaitRoom from "./WaitRoom";
 import { useSocket } from "../hooks/useSocket.ts";
@@ -9,8 +9,9 @@ export const Admin = () => {
   const [data, setData] = useState<Quiz[] | null>(null);
   const [roomId, setRoomId] = useState<number | null>(null);
   const [adminJoined, setAdminJoined] = useState<boolean>(false);
-  const [activeUsers, setActiveUsers] = useState<number | null>(null);
+  const [activeUsers, setActiveUsers] = useState<number>(0);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [questions, setQuestions] = useState<Question[] | null>(null);
 
   const socket = useSocket();
 
@@ -21,6 +22,7 @@ export const Admin = () => {
           "http://localhost:3000/admin/api/quizes/getAllQuiz"
         );
         setData(response.data);
+        console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -36,6 +38,7 @@ export const Admin = () => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case "waiting_room":
+          console.log("activeUsers changed");
           setActiveUsers(message.activeUsers);
           setAdminJoined(true);
           break;
@@ -54,18 +57,42 @@ export const Admin = () => {
     };
   }, [socket]);
 
-  const handleJoin = (id: number, title: string) => {
+  useEffect(() => {
+    if (roomId && socket) {
+      const fetchQuestions = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/admin/api/quizes/getQuestionsById/${roomId}`
+          );
+          console.log(response.data);
+          setQuestions(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchQuestions();
+    }
+  }, [roomId, socket]);
+
+  const handleJoin = (id: number) => {
     if (socket) {
       setRoomId(id);
-      console.log("hello");
+    }
+  };
+
+  useEffect(() => {
+    console.log(questions);
+    if (questions && socket && roomId) {
       socket.send(
         JSON.stringify({
           type: "admin_joined",
-          roomId: id,
+          roomId: roomId,
+          questions: questions,
         })
       );
     }
-  };
+  }, [questions, socket, roomId]);
 
   if (!adminJoined) {
     return (
@@ -79,7 +106,7 @@ export const Admin = () => {
               data.map((quiz: any) => (
                 <div key={quiz.id} className="flex flex-col my-5">
                   <button
-                    onClick={() => handleJoin(quiz.id, quiz.title)}
+                    onClick={() => handleJoin(quiz.id)}
                     className="bg-blue-500 text-white py-2 px-4 rounded"
                   >
                     {quiz.title}
@@ -92,5 +119,12 @@ export const Admin = () => {
     );
   }
 
-  return <WaitRoom socket={socket} activeUsers={activeUsers} />;
+  return (
+    <WaitRoom
+      socket={socket}
+      activeUsers={activeUsers}
+      adminJoined={adminJoined}
+      roomId={roomId}
+    />
+  );
 };

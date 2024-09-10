@@ -1,13 +1,32 @@
 import { useEffect, useState } from "react";
 import "./customCss.css";
+import { useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   socket: WebSocket | null;
   activeUsers: number | null;
+  adminJoined: boolean;
+  roomId: number | null;
 };
 
-export default function WaitRoom({ socket, activeUsers }: Props) {
+export default function WaitRoom({
+  socket,
+  activeUsers,
+  adminJoined,
+  roomId,
+}: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/admin") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!socket) {
@@ -28,6 +47,24 @@ export default function WaitRoom({ socket, activeUsers }: Props) {
       socket.removeEventListener("message", handleSocketMessage);
     };
   }, [socket]);
+
+  useEffect(() => {}, [socket]);
+  // TODO: listen for started event to get the question
+  // useEffect(() => {
+  //   if (!socket) {
+  //     return;
+  //   }
+
+  // }, [socket]);
+
+  const handleStartGame = () => {
+    socket?.send(
+      JSON.stringify({
+        type: "started",
+        roomId: roomId,
+      })
+    );
+  };
 
   return (
     <div className="bg-white">
@@ -55,6 +92,11 @@ export default function WaitRoom({ socket, activeUsers }: Props) {
             </div>
           )}
         </div>
+        {adminJoined ? (
+          <div className="flex items-center justify-end mb-20">
+            <Button onClick={handleStartGame}>Start Game</Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

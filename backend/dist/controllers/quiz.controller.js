@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAll = exports.getAllQuestions = exports.getAllQuiz = exports.updateQuiz = exports.createQuiz = void 0;
+exports.getQuestionsById = exports.getQuizById = exports.deleteAll = exports.getAllQuestions = exports.getAllQuiz = exports.updateQuiz = exports.createQuiz = void 0;
 const quiz_model_1 = require("../models/quiz.model");
 const createQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title } = req.body;
-    const quiz = (0, quiz_model_1.createQuizModel)(title);
-    res.status(200).json(quiz);
+    const quiz = yield (0, quiz_model_1.createQuizModel)(title);
+    res.status(200).json({ id: quiz.id });
 });
 exports.createQuiz = createQuiz;
 const updateQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,6 +41,18 @@ const getAllQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json(quizes);
 });
 exports.getAllQuiz = getAllQuiz;
+const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(req.params.id);
+    const quiz = yield (0, quiz_model_1.getQuizByIdModel)(id);
+    res.status(200).json(quiz);
+});
+exports.getQuizById = getQuizById;
+const getQuestionsById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(req.params.id);
+    const questions = yield (0, quiz_model_1.getQuestionsByIdModel)(id);
+    res.status(200).json(questions);
+});
+exports.getQuestionsById = getQuestionsById;
 const deleteAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield (0, quiz_model_1.deleteAllModel)();
     if (!response) {

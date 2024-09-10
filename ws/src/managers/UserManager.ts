@@ -60,6 +60,7 @@ export class UserManager {
         JSON.stringify({
           type: "waiting_room",
           id: message.roomId,
+          activeUsers: this.getActiveUsers(message),
         })
       );
 
@@ -73,15 +74,15 @@ export class UserManager {
             roomId: message.roomId,
           });
 
-          setTimeout(() => {
-            const users = this.quizManager
-              .getQuiz(message.roomId)
-              ?.showLeaderboard();
-            this.broadcast({
-              type: "leaderboard",
-              users: users,
-            });
-          }, 30000);
+          // setTimeout(() => {
+          //   const users = this.quizManager
+          //     .getQuiz(message.roomId)
+          //     ?.showLeaderboard();
+          //   this.broadcast({
+          //     type: "leaderboard",
+          //     users: users,
+          //   });
+          // }, 30000);
         }
       });
     }
@@ -107,6 +108,7 @@ export class UserManager {
     message.questions?.map((question: Question) => {
       this.quizManager.getQuiz(message.roomId)?.addQuestion(question);
     });
+    this.quizManager.getQuiz(message.roomId)?.getQuestions();
   }
 
   private addUserToQuiz(message: Message, socket: WebSocket) {
@@ -137,8 +139,8 @@ export class UserManager {
 
   private submitAnswer(socket: WebSocket) {
     socket.on("message", (data) => {
-      const message = JSON.parse(data.toString());
-      if (message.type === "submit") {
+      const message: Message = JSON.parse(data.toString());
+      if (message.type === "submit" && message.submissions) {
         this.quizManager.getQuiz(message.roomId)?.submit(message.submissions);
       }
     });

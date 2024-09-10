@@ -4,9 +4,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSocket } from "../hooks/useSocket.ts";
+import { nanoid } from "nanoid";
 import WaitRoom from "./WaitRoom";
 
 export const User = () => {
+  const [adminJoined, setAdminJoined] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
   const [code, setCode] = useState<number | null>(null);
@@ -54,6 +56,7 @@ export const User = () => {
         type: "player_joined",
         roomId: code,
         username: username,
+        userId: nanoid(),
       })
     );
   };
@@ -93,5 +96,12 @@ export const User = () => {
     );
   }
 
-  return <WaitRoom socket={socket} activeUsers={activeUsers} />;
+  return (
+    <WaitRoom
+      socket={socket}
+      activeUsers={activeUsers}
+      adminJoined={adminJoined}
+      roomId={code}
+    />
+  );
 };

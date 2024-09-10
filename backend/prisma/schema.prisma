@@ -29,10 +29,11 @@ enum State {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id String @id
   username String @unique
   points Int @default(0)
   quizId Int?
+  submissions Submission[]
   quiz Quiz? @relation(fields: [quizId], references: [id])
 }
 
@@ -59,8 +60,18 @@ model Question {
   text String
   options Option[]
   answer AnswerNum @default(ONE)
+  startTime Int? @default(0)
   quizId Int?
   quiz Quiz? @relation(fields: [quizId], references: [id])
+  submission Submission[]
 }
 
-
+model Submission {
+  id Int @id @default(autoincrement())
+  questionId Int?
+  userId String?
+  isCorrect Boolean?
+  optionSelected AnswerNum?
+  question Question? @relation(fields: [questionId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+}

@@ -56,6 +56,13 @@ async function getAllQuizModel() {
     include: { questions: true },
   });
 }
+
+async function getQuizByIdModel(id: number) {
+  return await prisma.quiz.findMany({
+    where: { id: id },
+    include: { questions: true },
+  });
+}
 async function getAllQuestionsModel() {
   return await prisma.question.findMany({
     include: { options: true },
@@ -84,4 +91,5 @@ export {
   getQuestionsByIdModel,
   getAllQuestionsModel,
   deleteAllModel,
+  getQuizByIdModel,
 };
