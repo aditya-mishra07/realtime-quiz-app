@@ -25,7 +25,7 @@ const CardButton = ({ onClick, isClicked, title }: cardButtonProps) => {
   return (
     <button
       className={`flex items-center justify-center max-w-sm rounded-lg shadow-lg p-6 bg-white w-full text-center text-black ${
-        isClicked ? " bg-lime-500" : null
+        isClicked ? " bg-purple-400" : null
       }`}
       onClick={onClick}
     >
@@ -64,15 +64,16 @@ export default function Questions({
 
   const [selected, setSelected] = useState<Answer | null>(null);
 
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
   useEffect(() => {
-    if (selected) {
-      console.log(clickedStates);
-      // socket?.send(
-      //   JSON.stringify({
-      //     type: "submit",
-      //     submission: submission,
-      //   })
-      // );
+    if (selected && submitted) {
+      socket?.send(
+        JSON.stringify({
+          type: "submit",
+          submission: submission,
+        })
+      );
     }
   }, [submission, socket]);
 
@@ -104,6 +105,7 @@ export default function Questions({
         ...prevSubmission,
         optionSelected: selected,
       }));
+      setSubmitted(true);
     } else {
       //TODO POPUP
     }
