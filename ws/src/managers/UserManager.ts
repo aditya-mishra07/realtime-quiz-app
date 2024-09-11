@@ -69,7 +69,7 @@ export class UserManager {
         if (message.type === "started") {
           const question = this.quizManager.getQuiz(message.roomId)?.start();
           this.broadcast({
-            type: "start",
+            type: "question",
             question: question,
             roomId: message.roomId,
           });
@@ -108,7 +108,7 @@ export class UserManager {
     message.questions?.map((question: Question) => {
       this.quizManager.getQuiz(message.roomId)?.addQuestion(question);
     });
-    this.quizManager.getQuiz(message.roomId)?.getQuestions();
+    // this.quizManager.getQuiz(message.roomId)?.getQuestions();
   }
 
   private addUserToQuiz(message: Message, socket: WebSocket) {
@@ -126,6 +126,7 @@ export class UserManager {
   private sendQuestion(socket: WebSocket) {
     socket.on("message", (data) => {
       const message = JSON.parse(data.toString());
+      console.log(message);
       if (message.type == "start") {
         socket.send(
           JSON.stringify({
@@ -140,8 +141,8 @@ export class UserManager {
   private submitAnswer(socket: WebSocket) {
     socket.on("message", (data) => {
       const message: Message = JSON.parse(data.toString());
-      if (message.type === "submit" && message.submissions) {
-        this.quizManager.getQuiz(message.roomId)?.submit(message.submissions);
+      if (message.type === "submit" && message.submission) {
+        this.quizManager.getQuiz(message.roomId)?.submit(message.submission);
       }
     });
   }

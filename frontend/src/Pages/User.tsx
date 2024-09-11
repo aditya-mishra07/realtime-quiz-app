@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useSocket } from "../hooks/useSocket.ts";
 import { nanoid } from "nanoid";
 import WaitRoom from "./WaitRoom";
-
 export const User = () => {
-  const [adminJoined, setAdminJoined] = useState<boolean>(false);
+  const [adminJoined] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
   const [code, setCode] = useState<number | null>(null);
   const [activeUsers, setActiveUsers] = useState<number | null>(null);
+  const [userId] = useState<string>(nanoid());
   // const [storeInDB, setStoreInDB] = useState<boolean>(false);
 
   const socket = useSocket();
@@ -32,6 +32,15 @@ export const User = () => {
         case "quiz_exists":
           console.log("quiz exists");
           break;
+        // case "question":
+        //   return (
+        //     <Questions
+        //       question={message.question}
+        //       roomId={code}
+        //       socket={socket}
+        //       userId={userId}
+        //     />
+        //   );
         default:
           break;
       }
@@ -56,7 +65,7 @@ export const User = () => {
         type: "player_joined",
         roomId: code,
         username: username,
-        userId: nanoid(),
+        userId: userId,
       })
     );
   };
@@ -102,6 +111,7 @@ export const User = () => {
       activeUsers={activeUsers}
       adminJoined={adminJoined}
       roomId={code}
+      userId={userId}
     />
   );
 };

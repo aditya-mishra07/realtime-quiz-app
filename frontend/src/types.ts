@@ -49,8 +49,8 @@ export interface Question {
 }
 
 export interface Submission {
-  questionId: number;
-  userId: string;
+  questionId?: number;
+  userId?: string;
   isCorrect?: boolean;
-  optionSelected: Answer;
+  optionSelected?: Answer;
 }

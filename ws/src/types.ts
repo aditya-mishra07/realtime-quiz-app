@@ -11,7 +11,7 @@ export interface Message {
   questions?: Question[];
   username?: string;
   users?: User[];
-  submissions?: Submission;
+  submission?: Submission;
 }
 
 export enum Answer {
