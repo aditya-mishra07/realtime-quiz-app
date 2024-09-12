@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import QuestionCard from "@/components/Question/QuestionCard";
 import { Answer, Question, Submission } from "@/types";
 import { useEffect, useState } from "react";
-import CardButton from "@/components/Question/cardButton";
+import CardButton from "@/components/Question/CardButton";
+import SubmittedLoading from "@/components/Loading/SubmittedLoading";
 
 type questionProps = {
   question: Question | null;
@@ -23,14 +24,21 @@ export default function Questions({
     false,
     false,
   ]);
+
   const [submission, setSubmission] = useState<Submission>({
     userId: userId,
     questionId: question?.id,
   });
 
   const [selected, setSelected] = useState<Answer | null>(null);
-
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [timeOver, setTimeOver] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setTimeOver(true);
+  //   }, 30000);
+  // }, []);
 
   useEffect(() => {
     if (selected && submitted) {
@@ -66,7 +74,7 @@ export default function Questions({
   };
 
   const handleSubmit = () => {
-    if (selected) {
+    if (selected !== null) {
       setSubmission((prevSubmission) => ({
         ...prevSubmission,
         optionSelected: selected,
@@ -77,26 +85,36 @@ export default function Questions({
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen">
-      <div className="mx-4 my-2">
-        <QuestionCard title={question?.text} />
+  if (!submitted && !timeOver) {
+    return (
+      <div className="flex flex-col h-screen">
+        <div className="mx-4 my-2">
+          <QuestionCard title={question?.text} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 p-6 m-20 mx-60">
+          {question?.options.map((option, index) => (
+            <CardButton
+              key={index}
+              isClicked={clickedStates[index]}
+              onClick={() => handleClick(index)}
+              title={option.text}
+            />
+          ))}
+        </div>
+        <div className=" flex justify-center mr-12">
+          <Button className=" w-[350px]" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 p-6 m-20 mx-60">
-        {question?.options.map((option, index) => (
-          <CardButton
-            key={index}
-            isClicked={clickedStates[index]}
-            onClick={() => handleClick(index)}
-            title={option.text}
-          />
-        ))}
+    );
+  }
+
+  if (submitted && !timeOver) {
+    return (
+      <div className=" flex items-center h-screen justify-center w-full">
+        <SubmittedLoading />
       </div>
-      <div className=" flex justify-center mr-12">
-        <Button className=" w-[350px]" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </div>
-    </div>
-  );
+    );
+  }
 }
