@@ -1,48 +1,14 @@
 import { Button } from "@/components/ui/button";
-
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import QuestionCard from "@/components/Question/QuestionCard";
 import { Answer, Question, Submission } from "@/types";
 import { useEffect, useState } from "react";
-
-type cardButtonProps = {
-  isClicked: boolean;
-  onClick: () => void;
-  title: string;
-};
+import CardButton from "@/components/Question/cardButton";
 
 type questionProps = {
   question: Question | null;
   userId?: string;
   roomId: number | null;
   socket: WebSocket | null;
-};
-
-type questionCardProps = {
-  title?: string;
-};
-
-const CardButton = ({ onClick, isClicked, title }: cardButtonProps) => {
-  return (
-    <button
-      className={`flex items-center justify-center max-w-sm rounded-lg shadow-lg p-6 bg-white w-full text-center text-black ${
-        isClicked ? " bg-purple-400" : null
-      }`}
-      onClick={onClick}
-    >
-      {" "}
-      {title}
-    </button>
-  );
-};
-
-const QuestionCard = ({ title }: questionCardProps) => {
-  return (
-    <Card className=" text-center rounded-2xl shadow-xl">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-    </Card>
-  );
 };
 
 export default function Questions({
