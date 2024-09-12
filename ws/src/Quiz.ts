@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { Question, User, Answer, state, Submission } from "./types";
+import { Question, User, Answer, state, Submission, Result } from "./types";
 
 export class Quiz {
   private roomId: number;
@@ -8,6 +8,8 @@ export class Quiz {
   private users: User[];
   private currentQuestion: number;
   private currentState: state;
+  private questionTimer: number;
+  private result: Result;
 
   constructor(roomId: number) {
     this.roomId = roomId;
@@ -16,13 +18,14 @@ export class Quiz {
     this.users = [];
     this.currentQuestion = 0;
     this.currentState = "not_started";
+    this.questionTimer = 30;
+    this.result = {};
   }
 
   public setCurrentQuestion(question: Question) {
     this.currentState = "question";
     question.submissions = [];
     question.startTime = new Date().getTime();
-
     // setTimeout(() => {
     //   this.showLeaderboard();
     // }, 30 * 1000);
@@ -79,15 +82,34 @@ export class Quiz {
       return;
     }
 
+    if (question.answer === submission.optionSelected) {
+      user.streak?.push(1);
+    } else {
+      user.streak = [];
+    }
+
     question?.submissions.push({
       questionId: submission.questionId,
       userId: submission.userId,
       isCorrect: question.answer === submission.optionSelected,
       optionSelected: submission.optionSelected,
     });
+    user.roundPoints =
+      (1 -
+        (new Date().getTime() - question?.startTime) /
+          1000 /
+          (this.questionTimer * 2)) *
+      1000;
+    user.points += user.roundPoints;
+  }
 
-    user.points +=
-      1000 - (500 * (new Date().getTime() - question?.startTime)) / (30 * 1000);
+  public getResult(userId: string) {
+    const user = this.users.find((user) => user.userId === userId);
+    const users = this.users.sort((a, b) => (a.points < b.points ? 1 : -1));
+    const position = this.users.findIndex((user) => user.userId === userId) + 1;
+    this.result.position = position;
+    this.result.userinfo = user;
+    return this.result;
   }
 
   public showLeaderboard() {

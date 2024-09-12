@@ -2,6 +2,13 @@ export interface User {
   username: string;
   userId: string;
   points: number;
+  streak?: number[];
+  roundPoints?: number;
+}
+
+export interface Result {
+  position?: number;
+  userinfo?: User;
 }
 
 export interface Message {
@@ -36,6 +43,6 @@ export interface Submission {
   questionId: number;
   userId: string;
   isCorrect?: boolean;
-  optionSelected: Answer;
+  optionSelected?: Answer;
 }
 export type state = "not_started" | "question" | "leaderboard" | "ended";
