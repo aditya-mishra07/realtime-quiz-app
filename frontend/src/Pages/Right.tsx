@@ -7,6 +7,7 @@ type RightProps = {
   userinfo: User;
   position: number;
 };
+
 export default function Right({ userinfo, position }: RightProps) {
   const suffix = PositionEnding(position);
   return (

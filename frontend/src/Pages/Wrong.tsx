@@ -7,7 +7,7 @@ type WrongProps = {
   position: number;
 };
 
-export default function Wrong({ position }: WrongProps) {
+export default function Wrong({ userinfo, position }: WrongProps) {
   const suffix = PositionEnding(position);
 
   return (
