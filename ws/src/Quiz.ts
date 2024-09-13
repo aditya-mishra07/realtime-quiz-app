@@ -26,9 +26,6 @@ export class Quiz {
     this.currentState = "question";
     question.submissions = [];
     question.startTime = new Date().getTime();
-    // setTimeout(() => {
-    //   this.showLeaderboard();
-    // }, 30 * 1000);
     return question;
   }
 
@@ -64,7 +61,18 @@ export class Quiz {
     return this.setCurrentQuestion(this.questions[0]);
   }
 
-  public next() {}
+  public next() {
+    this.currentQuestion++;
+    this.currentState = "question";
+    return this.setCurrentQuestion(this.questions[this.currentQuestion]);
+  }
+
+  public checkGameEnded(): boolean {
+    if (this.currentQuestion > this.questions.length - 1) {
+      return true;
+    }
+    return false;
+  }
 
   public getQuestions() {
     this.questions.forEach((question) => {
@@ -103,11 +111,13 @@ export class Quiz {
         1000;
       user.points += user.roundPoints;
     }
+    this.currentState = "leaderboard";
   }
 
   public getResult(userId: string) {
     const user = this.users.find((user) => user.userId === userId);
     const users = this.users.sort((a, b) => (a.points < b.points ? 1 : -1));
+    console.log(this.users);
     const position = users.findIndex((user) => user.userId === userId) + 1;
     this.result.position = position;
     this.result.userinfo = user;

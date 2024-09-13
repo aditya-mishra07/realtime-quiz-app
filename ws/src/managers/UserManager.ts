@@ -91,7 +91,9 @@ export class UserManager {
   userHandler(socket: WebSocket, message: Message) {
     if (this.quizManager.getQuiz(message.roomId)) {
       this.addUserToQuiz(message, socket);
-      // this.sendQuestion(socket);
+      // while (!this.quizManager.getQuiz(message.roomId)?.checkGameEnded) {
+
+      // }
       this.submitAnswer(socket);
     } else {
       console.log("incorrect id");
@@ -161,7 +163,19 @@ export class UserManager {
           userId: message.userId,
         })
       );
+      this.sendResult(message, socket);
     }
+  }
+
+  private nextQuestion(message: Message, socket: WebSocket) {
+    socket.send(
+      JSON.stringify({
+        type: "nextQuestion",
+        userId: message.userId,
+        roomId: message.roomId,
+        question: this.quizManager.getQuiz(message.roomId)?.next(),
+      })
+    );
   }
 
   private getActiveUsers(message: Message) {
