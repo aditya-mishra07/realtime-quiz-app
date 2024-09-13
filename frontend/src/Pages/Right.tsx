@@ -1,12 +1,14 @@
 import { HiCheckCircle } from "react-icons/hi";
 import { BsFire } from "react-icons/bs";
 import { User } from "@/types";
+import PositionEnding from "@/components/Result/PositionEnding";
 
 type RightProps = {
   userinfo: User;
   position: number;
 };
 export default function Right({ userinfo, position }: RightProps) {
+  const suffix = PositionEnding(position);
   return (
     <div className="h-screen bg-green-600 font-sans">
       <div className=" flex flex-col justify-center items-center">
@@ -29,7 +31,8 @@ export default function Right({ userinfo, position }: RightProps) {
           +{userinfo.points}
         </div>
         <h5 className="text-white text-lg font-semibold mt-2">
-          You're in {position}st place
+          You're in {position}
+          {suffix} place
         </h5>
       </div>
     </div>

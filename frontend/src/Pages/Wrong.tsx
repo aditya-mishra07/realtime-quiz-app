@@ -1,12 +1,15 @@
+import PositionEnding from "@/components/Result/PositionEnding";
 import { User } from "@/types";
 import { HiOutlineXCircle } from "react-icons/hi";
 
 type WrongProps = {
-  userinfo: User;
+  userinfo?: User;
   position: number;
 };
 
-export default function Wrong({ userinfo, position }: WrongProps) {
+export default function Wrong({ position }: WrongProps) {
+  const suffix = PositionEnding(position);
+
   return (
     <div className=" h-screen bg-pink-600">
       <div className="flex flex-col justify-center items-center">
@@ -22,7 +25,8 @@ export default function Wrong({ userinfo, position }: WrongProps) {
           Lock it in!
         </div>
         <h5 className="text-white text-lg font-semibold mt-2">
-          You're in {position}st place
+          You're in {position}
+          {suffix} place
         </h5>
       </div>
     </div>
