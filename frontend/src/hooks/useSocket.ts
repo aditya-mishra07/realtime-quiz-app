@@ -1,20 +1,12 @@
+import WebSocketService from "@/classes/WebSocketService";
 import { useEffect, useRef, useState } from "react";
 
 export const useSocket = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
-
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-      setSocket(ws);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-      setSocket(null);
-    };
+    const ws = WebSocketService.getInstance();
+    setSocket(ws);
 
     // Clean up function
     return () => {

@@ -42,13 +42,12 @@ export default function WaitRoom({
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
       if (message.type === "question" && !adminJoined) {
-        console.log(message);
         setLoadQuestion(true);
         setQuestion(message.question);
       }
-      if (message.type === "question" && adminJoined) {
-        return;
-      }
+      // if (message.type === "question" && adminJoined) {
+      //   return;
+      // }
     };
 
     socket.addEventListener("message", handleSocketMessage);
@@ -57,8 +56,6 @@ export default function WaitRoom({
       socket.removeEventListener("message", handleSocketMessage);
     };
   }, [socket]);
-
-  useEffect(() => {}, [socket]);
   // TODO: listen for started event to get the question
   // useEffect(() => {
   //   if (!socket) {

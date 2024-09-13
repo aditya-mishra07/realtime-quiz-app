@@ -18,6 +18,8 @@ export interface User {
   username: string;
   userId: string;
   points: number;
+  streak?: number[];
+  roundPoints?: number;
 }
 
 export interface Message {
@@ -52,5 +54,5 @@ export interface Submission {
   questionId?: number;
   userId?: string;
   isCorrect?: boolean;
-  optionSelected?: Answer;
+  optionSelected?: string;
 }

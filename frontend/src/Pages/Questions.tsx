@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import QuestionCard from "@/components/Question/QuestionCard";
-import { Answer, Question, Submission } from "@/types";
+import { Question, Submission, User } from "@/types";
 import { useEffect, useState } from "react";
 import CardButton from "@/components/Question/CardButton";
 import SubmittedLoading from "@/components/Loading/SubmittedLoading";
+import Wrong from "./Wrong";
+import Right from "./Right";
 
 type questionProps = {
   question: Question | null;
@@ -30,26 +32,50 @@ export default function Questions({
     questionId: question?.id,
   });
 
-  const [selected, setSelected] = useState<Answer | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [timeOver, setTimeOver] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setTimeOver(true);
-  //   }, 30000);
-  // }, []);
+  const [isCorrect, setisCorrect] = useState<boolean | null>(null);
+  const [userinfo, setUserInfo] = useState<User | null>(null);
+  const [position, setPosition] = useState<number | null>(null);
+  useEffect(() => {
+    setTimeout(() => {
+      setTimeOver(true);
+    }, 30000);
+  }, []);
 
   useEffect(() => {
-    if (selected && submitted) {
+    if (selected !== null && submitted) {
       socket?.send(
         JSON.stringify({
           type: "submit",
           submission: submission,
+          roomId: roomId,
         })
       );
     }
   }, [submission, socket]);
+
+  useEffect(() => {
+    const handleSocketMessage = (event: MessageEvent) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "result") {
+        if (message.result.userinfo.streak.length > 0) {
+          setisCorrect(true);
+          setUserInfo(message.result.userinfo);
+          setPosition(message.result.position);
+        } else {
+          setisCorrect(false);
+          setUserInfo(message.result.userinfo);
+          setPosition(message.result.position);
+        }
+      }
+    };
+    socket?.addEventListener("message", handleSocketMessage);
+    return () => {
+      socket?.removeEventListener("message", handleSocketMessage);
+    };
+  }, [socket, timeOver]);
 
   const handleClick = (index: number) => {
     setClickedStates((prevStates) =>
@@ -57,16 +83,16 @@ export default function Questions({
     );
     switch (index) {
       case 0:
-        setSelected(Answer.ONE);
+        setSelected("ONE");
         break;
       case 1:
-        setSelected(Answer.TWO);
+        setSelected("TWO");
         break;
       case 2:
-        setSelected(Answer.THREE);
+        setSelected("THREE");
         break;
       case 3:
-        setSelected(Answer.FOUR);
+        setSelected("FOUR");
         break;
       default:
         break;
@@ -115,6 +141,19 @@ export default function Questions({
       <div className=" flex items-center h-screen justify-center w-full">
         <SubmittedLoading />
       </div>
+    );
+  }
+  if (submitted && timeOver && position && userinfo) {
+    return (
+      <>
+        {isCorrect ? (
+          <>
+            <Right position={position} userinfo={userinfo} />
+          </>
+        ) : (
+          <Wrong position={position} userinfo={userinfo} />
+        )}
+      </>
     );
   }
 }

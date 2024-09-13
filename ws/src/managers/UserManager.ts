@@ -93,7 +93,6 @@ export class UserManager {
       this.addUserToQuiz(message, socket);
       // this.sendQuestion(socket);
       this.submitAnswer(socket);
-      this.sendResult(message, socket);
     } else {
       console.log("incorrect id");
       socket.send(
@@ -144,15 +143,17 @@ export class UserManager {
       const message: Message = JSON.parse(data.toString());
       if (message.type === "submit" && message.submission) {
         this.quizManager.getQuiz(message.roomId)?.submit(message.submission);
+        this.sendResult(message, socket);
       }
     });
   }
 
   private sendResult(message: Message, socket: WebSocket) {
-    if (message.userId) {
+    if (message.submission?.userId) {
       const result = this.quizManager
         .getQuiz(message.roomId)
-        ?.getResult(message.userId);
+        ?.getResult(message.submission.userId);
+      console.log(result);
       socket.send(
         JSON.stringify({
           type: "result",

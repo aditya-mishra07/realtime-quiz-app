@@ -77,15 +77,15 @@ export class Quiz {
       (question) => question.id === submission.questionId
     );
     const user = this.users.find((user) => user.userId === submission.userId);
+
     if (!user || !question) {
       console.log("the user or the question doesn't exist");
       return;
     }
+    user.streak = [];
 
     if (question.answer === submission.optionSelected) {
-      user.streak?.push(1);
-    } else {
-      user.streak = [];
+      user.streak.push(1);
     }
 
     question?.submissions.push({
@@ -94,13 +94,15 @@ export class Quiz {
       isCorrect: question.answer === submission.optionSelected,
       optionSelected: submission.optionSelected,
     });
-    user.roundPoints =
-      (1 -
-        (new Date().getTime() - question?.startTime) /
-          1000 /
-          (this.questionTimer * 2)) *
-      1000;
-    user.points += user.roundPoints;
+    if (question.answer === submission.optionSelected) {
+      user.roundPoints =
+        (1 -
+          (new Date().getTime() - question?.startTime) /
+            1000 /
+            (this.questionTimer * 2)) *
+        1000;
+      user.points += user.roundPoints;
+    }
   }
 
   public getResult(userId: string) {

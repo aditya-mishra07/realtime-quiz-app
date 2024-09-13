@@ -1,5 +1,12 @@
+import { User } from "@/types";
 import { HiOutlineXCircle } from "react-icons/hi";
-export default function Wrong() {
+
+type WrongProps = {
+  userinfo: User;
+  position: number;
+};
+
+export default function Wrong({ userinfo, position }: WrongProps) {
   return (
     <div className=" h-screen bg-pink-600">
       <div className="flex flex-col justify-center items-center">
@@ -15,7 +22,7 @@ export default function Wrong() {
           Lock it in!
         </div>
         <h5 className="text-white text-lg font-semibold mt-2">
-          You're in 1st place
+          You're in {position}st place
         </h5>
       </div>
     </div>
