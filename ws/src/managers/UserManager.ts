@@ -155,7 +155,6 @@ export class UserManager {
     socket.on("message", (data) => {
       const message: Message = JSON.parse(data.toString());
       if (message.type === "fetchQuestion") {
-        console.log(message);
         const question = this.quizManager.getQuiz(message.roomId)?.next();
         socket.send(
           JSON.stringify({

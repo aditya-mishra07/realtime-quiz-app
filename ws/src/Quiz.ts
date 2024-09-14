@@ -90,10 +90,16 @@ export class Quiz {
       console.log("the user or the question doesn't exist");
       return;
     }
-    user.streak = [];
 
     if (question.answer === submission.optionSelected) {
-      user.streak.push(1);
+      if (!user.streak) {
+        user.streak = [];
+      }
+      user.streak?.push(1);
+    }
+
+    if (question.answer !== submission.optionSelected) {
+      user.streak = [];
     }
 
     question?.submissions.push({
@@ -116,6 +122,7 @@ export class Quiz {
 
   public getResult(userId: string) {
     const user = this.users.find((user) => user.userId === userId);
+    console.log(user);
     const users = this.users.sort((a, b) => (a.points < b.points ? 1 : -1));
     const position = users.findIndex((user) => user.userId === userId) + 1;
     this.result.position = position;
