@@ -148,7 +148,13 @@ export default function Questions({
       <>
         {isCorrect ? (
           <>
-            <Right position={position} userinfo={userinfo} />
+            <Right
+              position={position}
+              userinfo={userinfo}
+              socket={socket}
+              roomId={roomId}
+              userId={userId}
+            />
           </>
         ) : (
           <Wrong position={position} userinfo={userinfo} />

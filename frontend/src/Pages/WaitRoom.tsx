@@ -45,9 +45,6 @@ export default function WaitRoom({
         setLoadQuestion(true);
         setQuestion(message.question);
       }
-      // if (message.type === "question" && adminJoined) {
-      //   return;
-      // }
     };
 
     socket.addEventListener("message", handleSocketMessage);

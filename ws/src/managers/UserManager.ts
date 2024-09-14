@@ -95,6 +95,7 @@ export class UserManager {
 
       // }
       this.submitAnswer(socket);
+      this.nextQuestion(socket);
     } else {
       console.log("incorrect id");
       socket.send(
@@ -125,21 +126,6 @@ export class UserManager {
     }
   }
 
-  private sendQuestion(socket: WebSocket) {
-    socket.on("message", (data) => {
-      const message = JSON.parse(data.toString());
-      console.log(message);
-      if (message.type == "start") {
-        socket.send(
-          JSON.stringify({
-            type: "question",
-            question: this.quizManager.getQuiz(message.roomId)?.start(),
-          })
-        );
-      }
-    });
-  }
-
   private submitAnswer(socket: WebSocket) {
     socket.on("message", (data) => {
       const message: Message = JSON.parse(data.toString());
@@ -155,7 +141,6 @@ export class UserManager {
       const result = this.quizManager
         .getQuiz(message.roomId)
         ?.getResult(message.submission.userId);
-      console.log(result);
       socket.send(
         JSON.stringify({
           type: "result",
@@ -163,19 +148,25 @@ export class UserManager {
           userId: message.userId,
         })
       );
-      this.sendResult(message, socket);
     }
   }
 
-  private nextQuestion(message: Message, socket: WebSocket) {
-    socket.send(
-      JSON.stringify({
-        type: "nextQuestion",
-        userId: message.userId,
-        roomId: message.roomId,
-        question: this.quizManager.getQuiz(message.roomId)?.next(),
-      })
-    );
+  private nextQuestion(socket: WebSocket) {
+    socket.on("message", (data) => {
+      const message: Message = JSON.parse(data.toString());
+      if (message.type === "fetchQuestion") {
+        console.log(message);
+        const question = this.quizManager.getQuiz(message.roomId)?.next();
+        socket.send(
+          JSON.stringify({
+            type: "nextQuestion",
+            userId: message.userId,
+            roomId: message.roomId,
+            question: question,
+          })
+        );
+      }
+    });
   }
 
   private getActiveUsers(message: Message) {
