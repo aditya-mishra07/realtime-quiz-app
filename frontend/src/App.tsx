@@ -4,6 +4,7 @@ import { User } from "./Pages/User";
 import { Admin } from "./Admin/Admin";
 import Leaderboard from "./Pages/Leaderboard";
 import SignIn from "./Admin/SignIn";
+import Signup from "./Admin/Signup";
 
 function App() {
   const router = createBrowserRouter([
@@ -22,6 +23,10 @@ function App() {
     {
       path: "/signin",
       element: <SignIn />,
+    },
+    {
+      path: "/signup",
+      element: <Signup />,
     },
   ]);
   return (
