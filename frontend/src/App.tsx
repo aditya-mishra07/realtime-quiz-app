@@ -1,8 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import { User } from "./Pages/User";
-import { Admin } from "./Pages/Admin";
+import { Admin } from "./Admin/Admin";
 import Leaderboard from "./Pages/Leaderboard";
+import SignIn from "./Admin/SignIn";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,6 +18,10 @@ function App() {
     {
       path: "/leaderboard",
       element: <Leaderboard />,
+    },
+    {
+      path: "/signin",
+      element: <SignIn />,
     },
   ]);
   return (
