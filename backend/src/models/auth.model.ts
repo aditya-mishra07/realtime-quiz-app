@@ -24,4 +24,19 @@ async function createAdminModel({
   });
 }
 
-export { findExistingAdminModel, createAdminModel };
+async function verifyAdminModel({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  return await prisma.admin.findFirst({
+    where: {
+      email,
+      password,
+    },
+  });
+}
+
+export { findExistingAdminModel, createAdminModel, verifyAdminModel };
