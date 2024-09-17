@@ -28,6 +28,11 @@ enum State {
   ended
 }
 
+enum Visibility {
+  private
+  public
+}
+
 model User {
   id String @id
   username String @unique
@@ -44,6 +49,9 @@ model Quiz {
   title String
   users User[]
   questions Question[]
+  adminId Int?
+  admin Admin? @relation(fields: [adminId], references: [id])
+  type Visibility @default(private)
 }
 
 model Option {
@@ -52,7 +60,6 @@ model Option {
   votes Int @default(0)
   questionId Int?
   question Question? @relation(fields: [questionId], references: [id])
-
 }
 
 model Question {
@@ -74,4 +81,11 @@ model Submission {
   optionSelected AnswerNum?
   question Question? @relation(fields: [questionId], references: [id])
   user User? @relation(fields: [userId], references: [id])
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+  quizes Quiz[]
 }
