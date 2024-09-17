@@ -11,6 +11,7 @@
   "description": "",
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.5.1",
     "nodemon": "^3.1.4",
     "prisma": "^5.19.0",
@@ -23,6 +24,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "openai": "^4.60.0"
+    "jsonwebtoken": "^9.0.2",
+    "openai": "^4.60.0",
+    "zod": "^3.23.8"
   }
 }

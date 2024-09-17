@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../db/db";
 
 async function createQuizModel(title: string) {
   return await prisma.quiz.create({
