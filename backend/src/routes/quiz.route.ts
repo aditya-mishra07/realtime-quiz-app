@@ -8,9 +8,11 @@ import {
   getQuizById,
   getQuestionsById,
 } from "../controllers/quiz.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
+router.use(authMiddleware);
 router.post("/createQuiz", createQuiz);
 router.put("/updateQuiz/:id", updateQuiz);
 router.get("/getAllQuiz", getAllQuiz);
