@@ -10,7 +10,6 @@ export const Admin = () => {
   const [roomId, setRoomId] = useState<number | null>(null);
   const [adminJoined, setAdminJoined] = useState<boolean>(false);
   const [activeUsers, setActiveUsers] = useState<number>(0);
-  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
 
   const socket = useSocket();
@@ -19,10 +18,10 @@ export const Admin = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/admin/api/quizes/getAllQuiz"
+          "http://localhost:3000/api/v1/admin/quizes/getAllQuiz"
         );
         setData(response.data);
-        console.log(data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -62,7 +61,7 @@ export const Admin = () => {
       const fetchQuestions = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/admin/api/quizes/getQuestionsById/${roomId}`
+            `http://localhost:3000/api/v1/admin/quizes/getQuestionsById/${roomId}`
           );
           console.log(response.data);
           setQuestions(response.data);
@@ -103,10 +102,10 @@ export const Admin = () => {
           </CardHeader>
           <CardContent>
             {data &&
-              data.map((quiz: any) => (
+              data.map((quiz: Quiz) => (
                 <div key={quiz.id} className="flex flex-col my-5">
                   <button
-                    onClick={() => handleJoin(quiz.id)}
+                    onClick={() => handleJoin(quiz?.id)}
                     className="bg-blue-500 text-white py-2 px-4 rounded"
                   >
                     {quiz.title}

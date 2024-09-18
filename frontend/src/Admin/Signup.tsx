@@ -1,4 +1,19 @@
+import { useAuth } from "@/context/useAuth";
+import { useState } from "react";
+
 export default function Signup() {
+  const { signup } = useAuth();
+  const [username, setUsername] = useState<string>();
+  const [password, setPassword] = useState<string>();
+
+  const handleSubmit = () => {
+    if (username && password) {
+      signup(username, password);
+    } else {
+      console.log("please enter username and password!");
+    }
+  };
+
   return (
     <div className="h-screen bg-purple-500 flex items-center justify-center">
       <div className="flex flex-col justify-center items-center bg-white rounded-lg text-center p-10">
@@ -7,18 +22,23 @@ export default function Signup() {
           type="text"
           placeholder="Email"
           className="border-2 border-gray-200 rounded-sm p-1 my-2 pr-20 pl-3"
+          onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="text"
           placeholder="Create password"
           className="border-2 border-gray-200 rounded-sm p-1 my-2 pr-20 pl-3"
+          onChange={(e) => setPassword(e.target.value)}
         />
         <input
           type="text"
           placeholder="Confirm password"
           className="border-2 border-gray-200 rounded-sm p-1 my-2 pr-20 pl-3"
         />
-        <button className="bg-purple-600 rounded-md text-white font-semibold p-2 mt-2 px-28">
+        <button
+          className="bg-purple-600 rounded-md text-white font-semibold p-2 mt-2 px-28"
+          onClick={handleSubmit}
+        >
           Signup
         </button>
         <div className="flex gap-1 mt-2">

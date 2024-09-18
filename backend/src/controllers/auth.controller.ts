@@ -57,6 +57,7 @@ const signinBody = zod.object({
 });
 
 const signin = async (req: any, res: any) => {
+  console.log(req.body);
   const { success } = signinBody.safeParse(req.body);
 
   if (!success) {
@@ -78,6 +79,7 @@ const signin = async (req: any, res: any) => {
     const token = jwt.sign({ id }, secret);
     return res.json({
       token: token,
+      message: "Signed in!",
     });
   }
 

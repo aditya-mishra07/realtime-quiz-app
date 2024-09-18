@@ -6,7 +6,7 @@ interface Option {
 }
 
 export interface Quiz {
-  id: number;
+  id: number | null;
   title: string;
   hasStarted?: boolean | null;
   questions?: Question[];

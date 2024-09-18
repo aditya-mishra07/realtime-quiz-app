@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const quiz_controller_1 = require("../controllers/quiz.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = express_1.default.Router();
+router.use(auth_middleware_1.authMiddleware);
 router.post("/createQuiz", quiz_controller_1.createQuiz);
 router.put("/updateQuiz/:id", quiz_controller_1.updateQuiz);
 router.get("/getAllQuiz", quiz_controller_1.getAllQuiz);
