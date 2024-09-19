@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Question, Quiz } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import WaitRoom from "../Pages/WaitRoom.tsx";
-import { useSocket } from "../hooks/useSocket.ts";
+import WaitRoom from "../WaitRoom";
+import { useSocket } from "@/hooks/useSocket.ts";
 
 export const Admin = () => {
   const [data, setData] = useState<Quiz[] | null>(null);

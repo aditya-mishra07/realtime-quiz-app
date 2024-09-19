@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/useAuth";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export default function Signup() {
   const { signup } = useAuth();
@@ -17,7 +18,9 @@ export default function Signup() {
   return (
     <div className="h-screen bg-purple-500 flex items-center justify-center">
       <div className="flex flex-col justify-center items-center bg-white rounded-lg text-center p-10">
-        <h1 className=" text-2xl mb-6 font-bold">Signup</h1>
+        <h1 className=" text-2xl mb-4 font-semibold text-black">
+          Create a free account
+        </h1>
         <input
           type="text"
           placeholder="Email"
@@ -39,11 +42,13 @@ export default function Signup() {
           className="bg-purple-600 rounded-md text-white font-semibold p-2 mt-2 px-28"
           onClick={handleSubmit}
         >
-          Signup
+          Sign up
         </button>
         <div className="flex gap-1 mt-2">
           <span className="text-sm mb-3">Already have an account?</span>
-          <span className="text-sm text-purple-700 mb-3">Login</span>
+          <span className="text-sm text-purple-700 mb-3">
+            <NavLink to={"/signin"}>Login </NavLink>
+          </span>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/useAuth";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export default function SignIn() {
   const { signin } = useAuth();
@@ -38,7 +39,9 @@ export default function SignIn() {
         </button>
         <div className="flex gap-1 mt-2">
           <span className="text-sm mb-3">Don't have an account?</span>
-          <span className="text-sm text-purple-700 mb-3">Signup</span>
+          <span className="text-sm text-purple-700 mb-3 ">
+            <NavLink to={"/signup"}>Sign up</NavLink>
+          </span>
         </div>
       </div>
     </div>

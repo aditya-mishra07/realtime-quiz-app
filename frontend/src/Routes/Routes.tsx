@@ -1,10 +1,11 @@
 import { User } from "../Pages/User";
-import { Admin } from "../Admin/Admin";
+import { Admin } from "@/Pages/Admin/Admin";
 import Leaderboard from "../Pages/Leaderboard";
-import SignIn from "../Admin/SignIn";
-import Signup from "../Admin/Signup";
+import SignIn from "../Pages/Auth/SignIn";
+import Signup from "../Pages/Auth/Signup";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
+import ForgottenPassword from "@/Pages/Auth/ForgottenPassword";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <Signup />,
+      },
+      {
+        path: "/forgotpassword",
+        element: <ForgottenPassword />,
       },
     ],
   },
