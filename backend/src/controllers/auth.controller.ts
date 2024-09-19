@@ -1,5 +1,4 @@
 import zod from "zod";
-import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import {
   createAdminModel,
@@ -16,6 +15,7 @@ import {
 import InternalServerError from "../utils/errors/InternalServerError";
 import UnauthorizedError from "../utils/errors/UnauthorizedError";
 import { asyncHandler } from "../utils/errors/asyncHandler";
+import { generateAccessToken } from "../utils/auth/generateToken";
 
 const signupBody = zod.object({
   email: zod.string().email(),
@@ -52,23 +52,8 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 
-  const secret = process.env.JWT_SECRET;
-
-  if (!secret) {
-    throw new NotFoundError({ message: "env file not found!" });
-  }
-
-  const token = jwt.sign(
-    {
-      id,
-    },
-    secret,
-    { expiresIn: "1h" }
-  );
-
-  res.json({
+  res.status(200).json({
     message: "User created successfully",
-    token: token,
   });
 });
 
@@ -96,13 +81,8 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     throw new UnauthorizedError({ message: "Invalid user credentials" });
   }
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new NotFoundError({ message: "env file not found!" });
-  }
-
-  const token = jwt.sign({ id }, secret);
-  return res.json({
+  const token = generateAccessToken(id);
+  return res.cookie("accessToken", token, { httpOnly: true }).json({
     token: token,
     message: "Signed in!",
   });
