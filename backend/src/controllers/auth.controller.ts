@@ -1,20 +1,18 @@
-import dotenv from "dotenv";
 import zod from "zod";
 import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 import {
   createAdminModel,
   findExistingAdminModel,
   verifyAdminModel,
 } from "../models/auth.model";
 
-dotenv.config();
-
 const signupBody = zod.object({
   email: zod.string().email(),
   password: zod.string(),
 });
 
-const signup = async (req: any, res: any) => {
+const signup = async (req: Request, res: Response) => {
   const { success } = signupBody.safeParse(req.body);
   if (!success) {
     return res.status(411).json({
@@ -56,7 +54,7 @@ const signinBody = zod.object({
   password: zod.string(),
 });
 
-const signin = async (req: any, res: any) => {
+const signin = async (req: Request, res: Response) => {
   console.log(req.body);
   const { success } = signinBody.safeParse(req.body);
 
