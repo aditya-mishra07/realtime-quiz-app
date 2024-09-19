@@ -6,33 +6,56 @@ import {
   findExistingAdminModel,
   verifyAdminModel,
 } from "../models/auth.model";
+import BadRequestError from "../utils/errors/BadRequestError";
+import ConflictError from "../utils/errors/ConflictError";
+import NotFoundError from "../utils/errors/NotFoundError";
+import {
+  comparePassword,
+  hashPassword,
+} from "../utils/auth/passwordEncryption";
+import InternalServerError from "../utils/errors/InternalServerError";
+import UnauthorizedError from "../utils/errors/UnauthorizedError";
+import { asyncHandler } from "../utils/errors/asyncHandler";
 
 const signupBody = zod.object({
   email: zod.string().email(),
   password: zod.string(),
 });
 
-const signup = async (req: Request, res: Response) => {
+const signup = asyncHandler(async (req: Request, res: Response) => {
   const { success } = signupBody.safeParse(req.body);
   if (!success) {
-    return res.status(411).json({
-      message: "Incorrect inputs",
+    throw new BadRequestError({
+      code: 400,
+      message: "All fields are required!",
     });
   }
+
+  const hashedPassword = await hashPassword(req.body.password);
 
   const existingAdmin = await findExistingAdminModel(req.body.email);
 
   if (existingAdmin) {
-    return res.status(411).json({
-      message: "Email already taken/Incorrect inputs",
+    throw new ConflictError({
+      code: 409,
+      message: "User with email already exists",
     });
   }
-  const { id } = await createAdminModel(req.body);
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    return res.status(411).json({
-      message: "JWT key not provided",
+  const { id } = await createAdminModel({
+    email: req.body.email,
+    password: hashedPassword,
+  });
+
+  if (!id) {
+    throw new InternalServerError({
+      message: "Something went wrong creating user!",
     });
+  }
+
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new NotFoundError({ message: "env file not found!" });
   }
 
   const token = jwt.sign(
@@ -47,43 +70,42 @@ const signup = async (req: Request, res: Response) => {
     message: "User created successfully",
     token: token,
   });
-};
+});
 
 const signinBody = zod.object({
   email: zod.string().email(),
   password: zod.string(),
 });
 
-const signin = async (req: Request, res: Response) => {
-  console.log(req.body);
+const signin = asyncHandler(async (req: Request, res: Response) => {
   const { success } = signinBody.safeParse(req.body);
 
   if (!success) {
-    return res.status(411).json({
-      message: "Incorrect Inputs",
+    throw new BadRequestError({
+      code: 400,
+      message: "Email and password is required!",
     });
   }
-  const admin = await verifyAdminModel(req.body);
-  const id = admin?.id;
-
-  if (admin) {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      return res.status(411).json({
-        message: "JWT key not provided",
-      });
-    }
-
-    const token = jwt.sign({ id }, secret);
-    return res.json({
-      token: token,
-      message: "Signed in!",
-    });
+  const admin = await findExistingAdminModel(req.body.email);
+  if (!admin) {
+    throw new NotFoundError({ message: "User does not exist!" });
+  }
+  const { id, password } = admin;
+  const isPasswordValid = await comparePassword(req.body.password, password);
+  if (!isPasswordValid) {
+    throw new UnauthorizedError({ message: "Invalid user credentials" });
   }
 
-  return res.status(401).json({
-    message: "Email or the Password do not match!",
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new NotFoundError({ message: "env file not found!" });
+  }
+
+  const token = jwt.sign({ id }, secret);
+  return res.json({
+    token: token,
+    message: "Signed in!",
   });
-};
+});
 
 export { signup, signin };

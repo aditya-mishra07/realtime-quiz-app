@@ -1,7 +1,7 @@
 import { CustomError } from "./CustomError";
 
-export default class NotFoundError extends CustomError {
-  private static readonly _statusCode = 404;
+export default class ConflictError extends CustomError {
+  private static readonly _statusCode = 409;
   private readonly _code: number;
   private readonly _logging: boolean;
   private readonly _context: { [key: string]: any };
@@ -14,12 +14,12 @@ export default class NotFoundError extends CustomError {
   }) {
     const { code, message, logging } = params || {};
 
-    super(message || "Not Found");
-    this._code = code || NotFoundError._statusCode;
+    super(message || "Bad request");
+    this._code = code || ConflictError._statusCode;
     this._logging = logging || false;
     this._context = params?.context || {};
 
-    Object.setPrototypeOf(this, NotFoundError.prototype);
+    Object.setPrototypeOf(this, ConflictError.prototype);
   }
 
   get errors() {

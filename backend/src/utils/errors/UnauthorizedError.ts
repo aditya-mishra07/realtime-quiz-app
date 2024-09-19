@@ -18,8 +18,6 @@ export default class UnauthorizedError extends CustomError {
     this._code = code || UnauthorizedError._statusCode;
     this._logging = logging || false;
     this._context = params?.context || {};
-
-    // Only because we are extending a built in class
     Object.setPrototypeOf(this, UnauthorizedError.prototype);
   }
 

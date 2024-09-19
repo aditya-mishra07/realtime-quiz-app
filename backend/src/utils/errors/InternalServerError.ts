@@ -1,7 +1,7 @@
 import { CustomError } from "./CustomError";
 
 export default class InternalServerError extends CustomError {
-  private static readonly _statusCode = 400;
+  private static readonly _statusCode = 500;
   private readonly _code: number;
   private readonly _logging: boolean;
   private readonly _context: { [key: string]: any };

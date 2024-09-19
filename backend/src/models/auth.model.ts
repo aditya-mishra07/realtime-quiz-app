@@ -1,4 +1,3 @@
-import e from "express";
 import prisma from "../db/db";
 
 async function findExistingAdminModel(email: string) {
@@ -20,6 +19,14 @@ async function createAdminModel({
     data: {
       email,
       password,
+    },
+  });
+}
+
+async function findAdminByIdModel(id: number) {
+  return await prisma.admin.findFirst({
+    where: {
+      id,
     },
   });
 }
