@@ -21,7 +21,6 @@ const authMiddleware = (req: any, res: any, next: any) => {
     const decoded = jwt.verify(jwtToken, secret);
 
     req.adminId = decoded;
-
     next();
   } catch (err) {
     return res.status(403).json({
