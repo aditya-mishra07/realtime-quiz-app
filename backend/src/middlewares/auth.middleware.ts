@@ -4,7 +4,6 @@ import UnauthorizedError from "../utils/errors/UnauthorizedError";
 import NotFoundError from "../utils/errors/NotFoundError";
 import { findAdminByIdModel } from "../models/auth.model";
 import { asyncHandler } from "../utils/errors/asyncHandler";
-import { decode } from "punycode";
 dotenv.config();
 
 interface JwtPayload {

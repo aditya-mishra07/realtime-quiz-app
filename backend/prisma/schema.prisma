@@ -89,4 +89,9 @@ model Admin {
   password String
   quizes Quiz[]
   refreshToken String?
+  isVerified Boolean @default(false)
+  forgotPasswordToken String?
+  forgotPasswordTokenExpiry DateTime?
+  verifyToken String?
+  verifyTokenExpiry DateTime?
 }

@@ -5,9 +5,10 @@ import {
   addRefreshTokenModel,
   createAdminModel,
   findAdminByIdModel,
+  findEmailToken,
   findExistingAdminModel,
   removeRefreshToken,
-  verifyAdminModel,
+  updateVerifiedAdminModel,
 } from "../models/auth.model";
 import BadRequestError from "../utils/errors/BadRequestError";
 import ConflictError from "../utils/errors/ConflictError";
@@ -23,6 +24,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth/generateToken";
+import { sendEmail } from "../utils/auth/mailer";
 
 interface JwtPayload {
   userId: number;
@@ -52,7 +54,7 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
       message: "User with email already exists",
     });
   }
-  const { id } = await createAdminModel({
+  const { id, email } = await createAdminModel({
     email: req.body.email,
     password: hashedPassword,
   });
@@ -62,7 +64,7 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
       message: "Something went wrong creating user!",
     });
   }
-
+  await sendEmail({ email, emailType: "VERIFY", userId: id });
   res.status(200).json({
     message: "User created successfully",
   });
@@ -73,9 +75,15 @@ const signinBody = zod.object({
   password: zod.string(),
 });
 
-const options: CookieOptions = {
+const refreshOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
+  expires: new Date(Date.now() + 60 * 10 * 1000),
+};
+const accessOptions: CookieOptions = {
+  httpOnly: true,
+  secure: true,
+  expires: new Date(Date.now() + 60 * 5 * 1000),
 };
 
 const signin = asyncHandler(async (req: Request, res: Response) => {
@@ -90,6 +98,9 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
   const admin = await findExistingAdminModel(req.body.email);
   if (!admin) {
     throw new NotFoundError({ message: "User does not exist!" });
+  }
+  if (!admin.isVerified) {
+    throw new UnauthorizedError({ message: "Please verify the user by email" });
   }
   const { id, password } = admin;
   const isPasswordValid = await comparePassword(req.body.password, password);
@@ -107,8 +118,8 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
   console.log(updatedAdmin);
 
   return res
-    .cookie("refreshToken", refreshToken, options)
-    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, refreshOptions)
+    .cookie("accessToken", accessToken, accessOptions)
     .json({
       token: accessToken,
       message: "Signed in!",
@@ -123,8 +134,8 @@ const signout = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", accessOptions)
+    .clearCookie("refreshToken", refreshOptions)
     .json({ message: "User logged out" });
 });
 
@@ -164,12 +175,29 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", validRefreshToken, options)
+      .cookie("accessToken", accessToken, accessOptions)
+      .cookie("refreshToken", validRefreshToken, refreshOptions)
       .json({ message: "Access token refreshed" });
   } catch (error) {
     throw new UnauthorizedError({ message: "Invalid refresh token" });
   }
 });
 
-export { signup, signin, signout, refreshAccessToken };
+const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+
+    const admin = await findEmailToken(token);
+    if (!admin) {
+      throw new BadRequestError({ message: "Invalid token" });
+    }
+    await updateVerifiedAdminModel(admin.id);
+    return res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    throw new InternalServerError({
+      message: "Something went wrong verifying the email",
+    });
+  }
+});
+
+export { signup, signin, signout, refreshAccessToken, verifyEmail };
