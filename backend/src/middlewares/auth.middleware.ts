@@ -1,32 +1,51 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import UnauthorizedError from "../utils/errors/UnauthorizedError";
+import NotFoundError from "../utils/errors/NotFoundError";
+import { findAdminByIdModel } from "../models/auth.model";
+import { asyncHandler } from "../utils/errors/asyncHandler";
+import { decode } from "punycode";
 dotenv.config();
 
-const authMiddleware = (req: any, res: any, next: any) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(403).json({});
+interface JwtPayload {
+  userId: number;
+}
+const authMiddleware = asyncHandler(async (req: any, res: any, next: any) => {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
+    throw new UnauthorizedError({ message: "Unauthorized access" });
   }
-
-  const jwtToken = authHeader.split(" ")[1];
 
   try {
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.ACCESS_TOKEN_SECRET;
     if (!secret) {
-      return res.status(411).json({
-        message: "JWT key not provided",
-      });
+      throw new NotFoundError({ message: "env file not found!" });
     }
-    const decoded = jwt.verify(jwtToken, secret);
+    const decoded = jwt.verify(accessToken, secret);
 
-    req.adminId = decoded;
+    if (typeof decoded === "string") {
+      throw new UnauthorizedError({ message: "Invalid access token" });
+    }
+    const { userId } = decoded as JwtPayload;
+
+    const admin = await findAdminByIdModel(userId);
+    if (!admin) {
+      throw new UnauthorizedError({ message: "Invalid access token" });
+    }
+
+    req.adminId = admin?.id;
     next();
   } catch (err) {
-    return res.status(403).json({
-      message: "authentication error",
-    });
+    throw new UnauthorizedError({ message: "Invalid access token" });
   }
-};
+});
 
 export { authMiddleware };
+
+// const authHeader = req.headers.authorization;
+
+// if (!authHeader || !authHeader.startsWith("Bearer ")) {
+//   return res.status(403).json({});
+// }
+
+// const jwtToken = authHeader.split(" ")[1];
