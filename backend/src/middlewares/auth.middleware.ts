@@ -33,7 +33,7 @@ const authMiddleware = asyncHandler(async (req: any, res: any, next: any) => {
       throw new UnauthorizedError({ message: "Invalid access token" });
     }
 
-    req.adminId = admin?.id;
+    req.adminId = admin.id;
     next();
   } catch (err) {
     throw new UnauthorizedError({ message: "Invalid access token" });

@@ -57,10 +57,25 @@ async function addRefreshTokenModel(userID: number, refreshToken: string) {
   });
 }
 
+async function removeRefreshToken(userId: number) {
+  return await prisma.admin.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      refreshToken: "",
+    },
+    select: {
+      refreshToken: true,
+    },
+  });
+}
+
 export {
   findExistingAdminModel,
   createAdminModel,
   verifyAdminModel,
   findAdminByIdModel,
   addRefreshTokenModel,
+  removeRefreshToken,
 };

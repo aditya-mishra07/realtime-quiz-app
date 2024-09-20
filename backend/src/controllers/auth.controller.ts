@@ -4,6 +4,7 @@ import {
   addRefreshTokenModel,
   createAdminModel,
   findExistingAdminModel,
+  removeRefreshToken,
   verifyAdminModel,
 } from "../models/auth.model";
 import BadRequestError from "../utils/errors/BadRequestError";
@@ -108,6 +109,17 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     });
 });
 
-const signout = asyncHandler(async (req, res) => {});
+const signout = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.adminId) {
+    throw new NotFoundError({ message: "adminId not found" });
+  }
+  await removeRefreshToken(req.adminId);
 
-export { signup, signin };
+  res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json({ message: "User logged out" });
+});
+
+export { signup, signin, signout };
