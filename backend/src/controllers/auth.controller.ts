@@ -200,4 +200,30 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-export { signup, signin, signout, refreshAccessToken, verifyEmail };
+const checkAuth = asyncHandler(async (req: Request, res: Response) => {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
+    return res.status(401).json({ authenticated: false });
+  }
+
+  try {
+    const secret = process.env.ACCESS_TOKEN_SECRET;
+    if (!secret) {
+      throw new NotFoundError({ message: "env file not found!" });
+    }
+    const decoded = jwt.verify(accessToken, secret);
+    if (typeof decoded === "string") {
+      throw new UnauthorizedError({ message: "Invalid access token" });
+    }
+    const { userId } = decoded as JwtPayload;
+    const admin = await findAdminByIdModel(userId);
+    if (!admin) {
+      throw new UnauthorizedError({ message: "Invalid access token" });
+    }
+    res.status(200).json({ authenticated: true });
+  } catch (err) {
+    res.status(401).json({ authenticated: false });
+  }
+});
+
+export { signup, signin, signout, refreshAccessToken, verifyEmail, checkAuth };

@@ -1,14 +1,15 @@
 import { signinAPI, signupAPI } from "@/Services/authService";
-import axios from "axios";
 import { useContext, useEffect, useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
-  token: string | null;
+  auth: {
+    authenticated: boolean;
+    loading: boolean;
+  };
   signin: (username: string, password: string) => void;
   signup: (username: string, password: string) => void;
   signout: () => void;
-  isSignedIn: () => boolean;
 };
 
 type Props = {
@@ -18,28 +19,21 @@ type Props = {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: Props) => {
+  const [auth, setAuth] = useState({ authenticated: false, loading: true });
   const navigate = useNavigate();
-  const [token, setToken] = useState<string | null>(null);
-  const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-    }
-    setIsReady(true);
+    const checkAuth = async () => {
+      try {
+      } catch (error) {}
+    };
+    checkAuth();
   }, []);
 
   const signup = async (username: string, password: string) => {
     try {
       const res = await signupAPI(username, password);
       if (res) {
-        localStorage.setItem("token", res?.data.token);
-        setToken(res?.data.token!);
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.token}`;
         navigate("/signin");
       }
     } catch (error) {
@@ -51,11 +45,6 @@ export const AuthProvider = ({ children }: Props) => {
     try {
       const res = await signinAPI(username, password);
       if (res) {
-        localStorage.setItem("token", res?.data.token);
-        setToken(res?.data.token!);
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.token}`;
         navigate("/admin");
       }
     } catch (error) {
@@ -63,21 +52,11 @@ export const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  const isSignedIn = () => {
-    return !!token;
-  };
-
-  const signout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    delete axios.defaults.headers.common["Authorization"];
-  };
+  const signout = () => {};
 
   return (
-    <AuthContext.Provider
-      value={{ token, signin, signup, isSignedIn, signout }}
-    >
-      {isReady ? children : null}
+    <AuthContext.Provider value={{ auth, signin, signup, signout }}>
+      {children}
     </AuthContext.Provider>
   );
 };

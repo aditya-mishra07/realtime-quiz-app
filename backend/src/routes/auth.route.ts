@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkAuth,
   refreshAccessToken,
   signin,
   signout,
@@ -15,4 +16,5 @@ router.post("/login", signin);
 router.post("/refresh-token", refreshAccessToken);
 router.route("/logout").post(authMiddleware, signout);
 router.post("/verify-email", verifyEmail);
+router.post("/auth-check", checkAuth);
 export default router;
