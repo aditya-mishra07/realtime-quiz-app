@@ -88,4 +88,5 @@ model Admin {
   email String @unique
   password String
   quizes Quiz[]
+  refreshToken String?
 }

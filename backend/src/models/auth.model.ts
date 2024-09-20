@@ -46,4 +46,21 @@ async function verifyAdminModel({
   });
 }
 
-export { findExistingAdminModel, createAdminModel, verifyAdminModel };
+async function addRefreshTokenModel(userID: number, refreshToken: string) {
+  return await prisma.admin.update({
+    where: {
+      id: userID,
+    },
+    data: {
+      refreshToken: refreshToken,
+    },
+  });
+}
+
+export {
+  findExistingAdminModel,
+  createAdminModel,
+  verifyAdminModel,
+  findAdminByIdModel,
+  addRefreshTokenModel,
+};

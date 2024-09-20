@@ -1,6 +1,7 @@
 import zod from "zod";
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import {
+  addRefreshTokenModel,
   createAdminModel,
   findExistingAdminModel,
   verifyAdminModel,
@@ -15,7 +16,10 @@ import {
 import InternalServerError from "../utils/errors/InternalServerError";
 import UnauthorizedError from "../utils/errors/UnauthorizedError";
 import { asyncHandler } from "../utils/errors/asyncHandler";
-import { generateAccessToken } from "../utils/auth/generateToken";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/auth/generateToken";
 
 const signupBody = zod.object({
   email: zod.string().email(),
@@ -62,6 +66,11 @@ const signinBody = zod.object({
   password: zod.string(),
 });
 
+const options: CookieOptions = {
+  httpOnly: true,
+  secure: true,
+};
+
 const signin = asyncHandler(async (req: Request, res: Response) => {
   const { success } = signinBody.safeParse(req.body);
 
@@ -81,11 +90,24 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     throw new UnauthorizedError({ message: "Invalid user credentials" });
   }
 
-  const token = generateAccessToken(id);
-  return res.cookie("accessToken", token, { httpOnly: true }).json({
-    token: token,
-    message: "Signed in!",
-  });
+  const accessToken = generateAccessToken(id);
+  const refreshToken = generateRefreshToken(id);
+  const hashedToken = await hashPassword(refreshToken);
+  if (!refreshToken) {
+    throw new NotFoundError({ message: "Access/Refresh Token not found" });
+  }
+  const updatedAdmin = await addRefreshTokenModel(id, hashedToken);
+  console.log(updatedAdmin);
+
+  return res
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json({
+      token: accessToken,
+      message: "Signed in!",
+    });
 });
+
+const signout = asyncHandler(async (req, res) => {});
 
 export { signup, signin };
