@@ -1,8 +1,10 @@
 import zod from "zod";
+import jwt from "jsonwebtoken";
 import { CookieOptions, Request, Response } from "express";
 import {
   addRefreshTokenModel,
   createAdminModel,
+  findAdminByIdModel,
   findExistingAdminModel,
   removeRefreshToken,
   verifyAdminModel,
@@ -21,6 +23,10 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth/generateToken";
+
+interface JwtPayload {
+  userId: number;
+}
 
 const signupBody = zod.object({
   email: zod.string().email(),
@@ -122,4 +128,48 @@ const signout = asyncHandler(async (req: Request, res: Response) => {
     .json({ message: "User logged out" });
 });
 
-export { signup, signin, signout };
+const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    throw new UnauthorizedError({ message: "Unauthorized request" });
+  }
+
+  try {
+    const secret = process.env.REFRESH_TOKEN_SECRET;
+    if (!secret) {
+      throw new NotFoundError({ message: "env file not found!" });
+    }
+
+    const decodedToken = jwt.verify(refreshToken, secret);
+    if (typeof decodedToken === "string") {
+      throw new UnauthorizedError({ message: "Invalid refresh token" });
+    }
+    const { userId } = decodedToken as JwtPayload;
+
+    const admin = await findAdminByIdModel(userId);
+
+    if (!admin || !admin.refreshToken) {
+      throw new UnauthorizedError({ message: "Invalid refresh token" });
+    }
+
+    if (!comparePassword(refreshToken, admin.refreshToken)) {
+      throw new UnauthorizedError({
+        message: "Refresh token has expired or used",
+      });
+    }
+
+    const accessToken = generateAccessToken(admin.id);
+    const validRefreshToken = generateRefreshToken(admin.id);
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", validRefreshToken, options)
+      .json({ message: "Access token refreshed" });
+  } catch (error) {
+    throw new UnauthorizedError({ message: "Invalid refresh token" });
+  }
+});
+
+export { signup, signin, signout, refreshAccessToken };
