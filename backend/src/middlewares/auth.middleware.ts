@@ -10,7 +10,7 @@ interface JwtPayload {
   userId: number;
 }
 const authMiddleware = asyncHandler(async (req: any, res: any, next: any) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await req.cookies.accessToken;
   if (!accessToken) {
     throw new UnauthorizedError({ message: "Unauthorized access" });
   }

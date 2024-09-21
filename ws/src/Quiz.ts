@@ -122,10 +122,12 @@ export class Quiz {
 
   public getResult(userId: string) {
     const user = this.users.find((user) => user.userId === userId);
-    console.log(user);
     const users = this.users.sort((a, b) => (a.points < b.points ? 1 : -1));
     const position = users.findIndex((user) => user.userId === userId) + 1;
     this.result.position = position;
+    if (user && !user.streak) {
+      user.streak = [];
+    }
     this.result.userinfo = user;
     return this.result;
   }

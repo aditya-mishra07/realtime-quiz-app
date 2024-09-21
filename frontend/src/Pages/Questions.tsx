@@ -41,11 +41,13 @@ export default function Questions({
   useEffect(() => {
     setTimeout(() => {
       if (!submitted) {
+        console.log("not submitted!");
         socket?.send(
           JSON.stringify({
             type: "not_submitted",
             submission: submission,
             roomId: roomId,
+            userId,
           })
         );
       }
@@ -167,13 +169,25 @@ export default function Questions({
             />
           </>
         ) : (
-          <Wrong position={position} userinfo={userinfo} />
+          <Wrong
+            position={position}
+            userId={userId}
+            roomId={roomId}
+            socket={socket}
+          />
         )}
       </>
     );
   }
 
-  if (!submitted && timeOver && position && userinfo) {
-    <Wrong position={position} userinfo={userinfo} />;
+  if (!submitted && timeOver && position) {
+    return (
+      <Wrong
+        position={position}
+        userId={userId}
+        roomId={roomId}
+        socket={socket}
+      />
+    );
   }
 }

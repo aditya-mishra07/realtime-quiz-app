@@ -77,13 +77,13 @@ const signinBody = zod.object({
 
 const refreshOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  expires: new Date(Date.now() + 60 * 10 * 1000),
+  expires: new Date(Date.now() + 60 * 5 * 1000),
+  path: "/",
 };
 const accessOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  expires: new Date(Date.now() + 60 * 5 * 1000),
+  expires: new Date(Date.now() + 60 * 1 * 1000),
+  path: "/",
 };
 
 const signin = asyncHandler(async (req: Request, res: Response) => {
@@ -111,19 +111,26 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
   const accessToken = generateAccessToken(id);
   const refreshToken = generateRefreshToken(id);
   const hashedToken = await hashPassword(refreshToken);
-  if (!refreshToken) {
+  if (!refreshToken || !accessToken) {
     throw new NotFoundError({ message: "Access/Refresh Token not found" });
   }
-  const updatedAdmin = await addRefreshTokenModel(id, hashedToken);
-  console.log(updatedAdmin);
 
-  return res
-    .cookie("refreshToken", refreshToken, refreshOptions)
-    .cookie("accessToken", accessToken, accessOptions)
-    .json({
-      token: accessToken,
-      message: "Signed in!",
-    });
+  await addRefreshTokenModel(id, hashedToken);
+  const expiresAt = new Date(Date.now() + 60 * 30 * 1000).toUTCString();
+  const refreshTokenCookie = `refreshToken=${refreshToken}; HttpOnly; Expires=${expiresAt}; Path=/;`;
+  const accessTokenCookie = `accessToken=${accessToken}; HttpOnly; Max-Age=${
+    60 * 15
+  }; Path=/;`;
+
+  res.setHeader("Set-Cookie", [refreshTokenCookie, accessTokenCookie]);
+
+  // res.cookie("refreshToken", refreshToken, refreshOptions);
+  // res.cookie("accessToken", accessToken, accessOptions);
+  console.log(req.headers);
+  res.status(200).json({
+    token: accessToken,
+    message: "Signed in!",
+  });
 });
 
 const signout = asyncHandler(async (req: Request, res: Response) => {
@@ -201,7 +208,8 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const checkAuth = asyncHandler(async (req: Request, res: Response) => {
-  if (!req.cookies.accessToken) {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
     console.log("cookies not found!");
     return res.status(401).json({ authenticated: false });
   }
@@ -211,7 +219,7 @@ const checkAuth = asyncHandler(async (req: Request, res: Response) => {
     if (!secret) {
       throw new NotFoundError({ message: "env file not found!" });
     }
-    const decoded = jwt.verify(req.cookies.accessToken, secret);
+    const decoded = jwt.verify(accessToken, secret);
     if (typeof decoded === "string") {
       throw new UnauthorizedError({ message: "Invalid access token" });
     }

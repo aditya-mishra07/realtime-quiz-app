@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/useAuth";
 import { checkAuthAPI } from "@/Services/authService";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
@@ -13,7 +12,6 @@ const ProtectedRoute = ({ children }: Props) => {
     const checkAuth = async () => {
       try {
         const res = await checkAuthAPI();
-        console.log(res);
         if (res) {
           setAuth({ authenticated: res.data.authenticated, loading: false });
         } else {

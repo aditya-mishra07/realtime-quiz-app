@@ -11,6 +11,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
@@ -19,7 +20,7 @@ app.use(
 );
 
 app.use(express.json());
-app.use(cookieParser());
+
 app.use(errorHandler);
 
 app.use("/api/v1/admin/quizes", quizRouter);

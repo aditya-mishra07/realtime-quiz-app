@@ -134,6 +134,7 @@ export class UserManager {
         this.sendResult(message, socket);
       }
       if (message.type === "not_submitted") {
+        console.log("sendResult");
         this.sendResult(message, socket);
       }
     });
@@ -144,6 +145,7 @@ export class UserManager {
       const result = this.quizManager
         .getQuiz(message.roomId)
         ?.getResult(message.userId);
+      console.log(result);
       socket.send(
         JSON.stringify({
           type: "result",

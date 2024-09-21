@@ -23,7 +23,7 @@ export const signinAPI = async (username: string, password: string) => {
 
 export const signupAPI = async (username: string, password: string) => {
   try {
-    const res = axios.post<AdminProfileToken>(api + "register", {
+    const res = await axios.post<AdminProfileToken>(api + "register", {
       email: username,
       password: password,
     });
@@ -35,9 +35,12 @@ export const signupAPI = async (username: string, password: string) => {
 
 export const checkAuthAPI = async () => {
   try {
-    const res = axios.get<{ authenticated: boolean }>(api + "auth-check", {
-      withCredentials: true,
-    });
+    const res = await axios.get<{ authenticated: boolean }>(
+      api + "auth-check",
+      {
+        withCredentials: true,
+      }
+    );
     return res;
   } catch (error) {
     console.log(error);
