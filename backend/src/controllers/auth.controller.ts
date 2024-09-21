@@ -134,8 +134,8 @@ const signout = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .clearCookie("accessToken", accessOptions)
-    .clearCookie("refreshToken", refreshOptions)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
     .json({ message: "User logged out" });
 });
 
@@ -201,8 +201,8 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const checkAuth = asyncHandler(async (req: Request, res: Response) => {
-  const accessToken = req.cookies.accessToken;
-  if (!accessToken) {
+  if (!req.cookies.accessToken) {
+    console.log("cookies not found!");
     return res.status(401).json({ authenticated: false });
   }
 
@@ -211,7 +211,7 @@ const checkAuth = asyncHandler(async (req: Request, res: Response) => {
     if (!secret) {
       throw new NotFoundError({ message: "env file not found!" });
     }
-    const decoded = jwt.verify(accessToken, secret);
+    const decoded = jwt.verify(req.cookies.accessToken, secret);
     if (typeof decoded === "string") {
       throw new UnauthorizedError({ message: "Invalid access token" });
     }

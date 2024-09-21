@@ -4,10 +4,16 @@ const api = "http://localhost:3000/api/v1/admin/auth/";
 
 export const signinAPI = async (username: string, password: string) => {
   try {
-    const res = await axios.post<AdminProfileToken>(api + "login", {
-      email: username,
-      password: password,
-    });
+    const res = await axios.post<AdminProfileToken>(
+      api + "login",
+      {
+        email: username,
+        password: password,
+      },
+      {
+        withCredentials: true, // Ensure cookies are sent back to the server
+      }
+    );
     return res;
   } catch (error) {
     //TODO: handleError
