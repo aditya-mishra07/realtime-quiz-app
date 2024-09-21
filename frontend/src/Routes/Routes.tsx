@@ -6,6 +6,7 @@ import Signup from "../Pages/Auth/Signup";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import ForgottenPassword from "@/Pages/Auth/ForgottenPassword";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Admin />,
+
+        element: (
+          <ProtectedRoute>
+            <Admin />,
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/leaderboard",

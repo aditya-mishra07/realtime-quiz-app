@@ -26,3 +26,14 @@ export const signupAPI = async (username: string, password: string) => {
     console.log(error);
   }
 };
+
+export const checkAuthAPI = async () => {
+  try {
+    const res = axios.get<{ authenticated: boolean }>(api + "auth-check", {
+      withCredentials: true,
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};

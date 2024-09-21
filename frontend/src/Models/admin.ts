@@ -1,4 +1,4 @@
 export interface AdminProfileToken {
   message: string;
-  token: string;
+  token?: string;
 }

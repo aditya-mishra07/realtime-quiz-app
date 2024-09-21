@@ -1,4 +1,4 @@
-import { signinAPI, signupAPI } from "@/Services/authService";
+import { checkAuthAPI, signinAPI, signupAPI } from "@/Services/authService";
 import { useContext, useEffect, useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,14 @@ export const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-      } catch (error) {}
+        const res = await checkAuthAPI();
+        if (res) {
+          setAuth({ authenticated: res.data.authenticated, loading: false });
+        }
+        setAuth({ authenticated: false, loading: false });
+      } catch (error) {
+        setAuth({ authenticated: false, loading: false });
+      }
     };
     checkAuth();
   }, []);
