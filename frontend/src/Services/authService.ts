@@ -4,7 +4,7 @@ const api = "http://localhost:3000/api/v1/admin/auth/";
 
 export const signinAPI = async (username: string, password: string) => {
   try {
-    const res = await axios.post<AdminProfileToken>(api + "signin", {
+    const res = await axios.post<AdminProfileToken>(api + "login", {
       email: username,
       password: password,
     });
@@ -17,7 +17,7 @@ export const signinAPI = async (username: string, password: string) => {
 
 export const signupAPI = async (username: string, password: string) => {
   try {
-    const res = axios.post<AdminProfileToken>(api + "signup", {
+    const res = axios.post<AdminProfileToken>(api + "register", {
       email: username,
       password: password,
     });

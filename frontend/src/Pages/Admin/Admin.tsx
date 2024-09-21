@@ -18,7 +18,8 @@ export const Admin = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/quizes/getAllQuiz"
+          "http://localhost:3000/api/v1/admin/quizes/getAllQuiz",
+          { withCredentials: true }
         );
         setData(response.data);
         console.log(response.data);
@@ -61,7 +62,8 @@ export const Admin = () => {
       const fetchQuestions = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/v1/admin/quizes/getQuestionsById/${roomId}`
+            `http://localhost:3000/api/v1/admin/quizes/getQuestionsById/${roomId}`,
+            { withCredentials: true }
           );
           console.log(response.data);
           setQuestions(response.data);
