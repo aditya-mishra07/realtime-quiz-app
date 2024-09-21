@@ -133,14 +133,17 @@ export class UserManager {
         this.quizManager.getQuiz(message.roomId)?.submit(message.submission);
         this.sendResult(message, socket);
       }
+      if (message.type === "not_submitted") {
+        this.sendResult(message, socket);
+      }
     });
   }
 
   private sendResult(message: Message, socket: WebSocket) {
-    if (message.submission?.userId) {
+    if (message.userId) {
       const result = this.quizManager
         .getQuiz(message.roomId)
-        ?.getResult(message.submission.userId);
+        ?.getResult(message.userId);
       socket.send(
         JSON.stringify({
           type: "result",

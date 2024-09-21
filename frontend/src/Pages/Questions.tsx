@@ -40,6 +40,15 @@ export default function Questions({
   const [position, setPosition] = useState<number | null>(null);
   useEffect(() => {
     setTimeout(() => {
+      if (!submitted) {
+        socket?.send(
+          JSON.stringify({
+            type: "not_submitted",
+            submission: submission,
+            roomId: roomId,
+          })
+        );
+      }
       setTimeOver(true);
     }, 30000);
   }, []);
@@ -51,6 +60,7 @@ export default function Questions({
           type: "submit",
           submission: submission,
           roomId: roomId,
+          userId: userId,
         })
       );
     }
@@ -161,5 +171,9 @@ export default function Questions({
         )}
       </>
     );
+  }
+
+  if (!submitted && timeOver && position && userinfo) {
+    <Wrong position={position} userinfo={userinfo} />;
   }
 }
