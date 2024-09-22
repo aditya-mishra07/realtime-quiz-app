@@ -45,6 +45,7 @@ export interface Question {
   answer: Answer;
   startTime: number;
   options: {
+    id: number;
     text: string;
   }[];
   submissions: Submission[];

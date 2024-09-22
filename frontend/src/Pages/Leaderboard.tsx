@@ -1,5 +1,6 @@
 import { FaUser } from "react-icons/fa";
 import { IoRocketSharp } from "react-icons/io5";
+
 const Leaderboard = () => {
   return (
     <div className=" flex flex-col bg-slate-300 h-screen w-full justify-center items-center">

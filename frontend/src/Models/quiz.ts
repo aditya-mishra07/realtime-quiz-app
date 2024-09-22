@@ -24,7 +24,7 @@ export interface User {
 
 export interface Message {
   type: string;
-  roomId: number;
+  roomId: string;
   userId?: string;
   questions?: Question[];
   username?: string;
@@ -44,9 +44,7 @@ export interface Question {
   text: string;
   answer: Answer;
   startTime: number;
-  options: {
-    text: string;
-  }[];
+  options: Option[];
   submissions: Submission[];
 }
 

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "./customCss.css";
 import { useLocation } from "react-router-dom";
 import Questions from "./Questions";
-import { Question } from "@/types";
+import { Question } from "@/Models/quiz";
 import { nanoid } from "nanoid";
 import { FaUser } from "react-icons/fa";
+import AdminQuestion from "./Admin/AdminQuestion";
 type Props = {
   socket: WebSocket | null;
   activeUsers: number | null;
@@ -45,7 +46,7 @@ export default function WaitRoom({
 
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
-      if (message.type === "question" && !adminJoined) {
+      if (message.type === "question") {
         setLoadQuestion(true);
         setQuestion(message.question);
       }
@@ -135,14 +136,20 @@ export default function WaitRoom({
       </div>
     );
   } else {
-    return (
-      <Questions
-        question={question}
-        roomId={roomId}
-        socket={socket}
-        userId={userId}
-      />
-    );
+    if (loadQuestion && !isAdmin && question) {
+      return (
+        <Questions
+          question={question}
+          roomId={roomId}
+          socket={socket}
+          userId={userId}
+        />
+      );
+    } else {
+      return (
+        <AdminQuestion question={question} roomId={roomId} socket={socket} />
+      );
+    }
   }
 
   // if (!loadQuestion) {
