@@ -7,6 +7,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import ForgottenPassword from "@/Pages/Auth/ForgottenPassword";
 import ProtectedRoute from "./ProtectedRoute";
+import AdminQuestion from "@/Pages/Admin/AdminQuestion";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
             <Admin />,
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/question",
+        element: <AdminQuestion />,
       },
       {
         path: "/leaderboard",
