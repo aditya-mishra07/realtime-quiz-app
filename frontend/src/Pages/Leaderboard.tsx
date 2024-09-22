@@ -1,95 +1,24 @@
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-
-export const description = "A mixed bar chart";
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: chartData[0].visitors,
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
-
-export default function () {
+import { FaUser } from "react-icons/fa";
+import { IoRocketSharp } from "react-icons/io5";
+const Leaderboard = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            layout="vertical"
-            margin={{
-              left: 0,
-            }}
-          >
-            <YAxis
-              dataKey="browser"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
-            <XAxis dataKey="visitors" type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Bar dataKey="visitors" layout="vertical" radius={3} />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+    <div className=" flex flex-col bg-slate-300 h-screen w-full justify-center items-center">
+      <div className=" flex flex-col bg-slate-300 rounded-xl shadow-lg items-center min-h-80 min-w-60">
+        <div className="flex items-center mb-14">
+          <h4 className=" font-semibold text-4xl mr-4">Leaderboard Results</h4>
+          <IoRocketSharp className="text-white text-4xl" />
         </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+        <div className=" bg-white rounded-lg shadow-sm flex justify-between gap-5 p-2 py-4 mx-6 pl-4">
+          <h2 className="font-semibold text-xl">1.</h2>
+          <h2 className="font-semibold text-xl mr-32">MessiLingard</h2>
+          <h2 className="font-semibold text-xl mr-24">450</h2>
+          <div className=" mr-2">
+            <FaUser className="text-black text-2xl" />
+          </div>
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
-}
+};
+
+export default Leaderboard;
