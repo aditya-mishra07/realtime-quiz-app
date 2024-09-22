@@ -15,11 +15,11 @@ export class QuizManager {
     return QuizManager.instance;
   }
 
-  getQuiz(roomId: number) {
+  getQuiz(roomId: string) {
     return this.quizes.find((x) => x.getRoomId() === roomId) ?? null;
   }
 
-  addQuiz(roomId: number) {
+  addQuiz(roomId: string) {
     if (this.getQuiz(roomId)) {
       return;
     }

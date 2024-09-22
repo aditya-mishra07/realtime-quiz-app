@@ -4,13 +4,16 @@ import { Question, Quiz } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WaitRoom from "../WaitRoom";
 import { useSocket } from "@/hooks/useSocket.ts";
+import { nanoid } from "nanoid";
 
 export const Admin = () => {
   const [data, setData] = useState<Quiz[] | null>(null);
-  const [roomId, setRoomId] = useState<number | null>(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [quizId, setQuizId] = useState<number | null>(null);
   const [adminJoined, setAdminJoined] = useState<boolean>(false);
   const [activeUsers, setActiveUsers] = useState<number>(0);
   const [questions, setQuestions] = useState<Question[] | null>(null);
+  const [players, setPlayers] = useState<{ username: string }[] | []>([]);
 
   const socket = useSocket();
 
@@ -38,9 +41,10 @@ export const Admin = () => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case "waiting_room":
-          console.log("activeUsers changed");
+          // console.log("activeUsers changed");
           setActiveUsers(message.activeUsers);
           setAdminJoined(true);
+          setPlayers(message.players);
           break;
         case "quiz_exists":
           console.log("quiz exists");
@@ -62,7 +66,7 @@ export const Admin = () => {
       const fetchQuestions = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/v1/admin/quizes/getQuestionsById/${roomId}`,
+            `http://localhost:3000/api/v1/admin/quizes/getQuestionsById/${quizId}`,
             { withCredentials: true }
           );
           console.log(response.data);
@@ -78,12 +82,12 @@ export const Admin = () => {
 
   const handleJoin = (id: number) => {
     if (socket) {
-      setRoomId(id);
+      setRoomId(nanoid(8));
+      setQuizId(id);
     }
   };
 
   useEffect(() => {
-    console.log(questions);
     if (questions && socket && roomId) {
       socket.send(
         JSON.stringify({
@@ -126,6 +130,7 @@ export const Admin = () => {
       activeUsers={activeUsers}
       adminJoined={adminJoined}
       roomId={roomId}
+      players={players}
     />
   );
 };

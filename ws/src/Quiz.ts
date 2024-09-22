@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { Question, User, Answer, state, Submission, Result } from "./types";
 
 export class Quiz {
-  private roomId: number;
+  private roomId: string;
   private hasStarted: boolean;
   private questions: Question[];
   private users: User[];
@@ -11,7 +11,7 @@ export class Quiz {
   private questionTimer: number;
   private result: Result;
 
-  constructor(roomId: number) {
+  constructor(roomId: string) {
     this.roomId = roomId;
     this.hasStarted = false;
     this.questions = [];
@@ -24,6 +24,7 @@ export class Quiz {
 
   public setCurrentQuestion(question: Question) {
     this.currentState = "question";
+    console.log(question);
     question.submissions = [];
     question.startTime = new Date().getTime();
     return question;

@@ -10,7 +10,7 @@ import Right from "./Right";
 type questionProps = {
   question: Question | null;
   userId?: string;
-  roomId: number | null;
+  roomId: string | null;
   socket: WebSocket | null;
 };
 

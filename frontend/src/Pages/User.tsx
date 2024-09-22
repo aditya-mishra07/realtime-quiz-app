@@ -10,9 +10,10 @@ export const User = () => {
   const [adminJoined] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
-  const [code, setCode] = useState<number | null>(null);
+  const [code, setCode] = useState<string | null>(null);
   const [activeUsers, setActiveUsers] = useState<number | null>(null);
   const [userId] = useState<string>(nanoid());
+  const [players, setPlayers] = useState<{ username: string }[] | []>([]);
   // const [storeInDB, setStoreInDB] = useState<boolean>(false);
 
   const socket = useSocket();
@@ -28,6 +29,7 @@ export const User = () => {
         case "waiting_room":
           setActiveUsers(message.activeUsers);
           setJoined(true);
+          setPlayers(message.players);
           break;
         case "quiz_exists":
           console.log("quiz exists");
@@ -93,7 +95,7 @@ export const User = () => {
                   <Input
                     id="name"
                     placeholder="Enter the RoomId"
-                    onChange={(e) => setCode(parseInt(e.target.value))}
+                    onChange={(e) => setCode(e.target.value)}
                   />
                 </div>
                 <Button type="submit">Join Room</Button>
@@ -112,6 +114,7 @@ export const User = () => {
       adminJoined={adminJoined}
       roomId={code}
       userId={userId}
+      players={players}
     />
   );
 };

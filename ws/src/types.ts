@@ -13,7 +13,7 @@ export interface Result {
 
 export interface Message {
   type: string;
-  roomId: number;
+  roomId: string;
   userId?: string;
   questions?: Question[];
   username?: string;

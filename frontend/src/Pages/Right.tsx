@@ -9,7 +9,7 @@ type RightProps = {
   userinfo: User;
   position: number;
   socket: WebSocket | null;
-  roomId: number | null;
+  roomId: string | null;
   userId?: string;
 };
 

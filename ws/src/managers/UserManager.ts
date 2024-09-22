@@ -5,10 +5,12 @@ import WebSocket from "ws";
 export class UserManager {
   private quizManager: QuizManager;
   private sockets: Set<WebSocket>;
+  private players: { username: string }[];
 
   constructor() {
     this.quizManager = QuizManager.getInstance();
     this.sockets = new Set();
+    this.players = [];
   }
 
   checkUserLeft(socket: WebSocket) {
@@ -119,9 +121,11 @@ export class UserManager {
       this.quizManager
         .getQuiz(message.roomId)
         ?.addUser(message.username, message.userId);
+      const players = this.quizManager.getQuiz(message.roomId)?.getUsers();
       this.broadcast({
         type: "waiting_room",
         activeUsers: this.getActiveUsers(message),
+        players: players,
       });
     }
   }
@@ -134,7 +138,6 @@ export class UserManager {
         this.sendResult(message, socket);
       }
       if (message.type === "not_submitted") {
-        console.log("sendResult");
         this.sendResult(message, socket);
       }
     });
@@ -145,7 +148,6 @@ export class UserManager {
       const result = this.quizManager
         .getQuiz(message.roomId)
         ?.getResult(message.userId);
-      console.log(result);
       socket.send(
         JSON.stringify({
           type: "result",
