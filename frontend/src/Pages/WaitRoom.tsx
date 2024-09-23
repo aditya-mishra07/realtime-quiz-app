@@ -147,7 +147,12 @@ export default function WaitRoom({
       );
     } else {
       return (
-        <AdminQuestion question={question} roomId={roomId} socket={socket} />
+        <AdminQuestion
+          question={question}
+          roomId={roomId}
+          socket={socket}
+          setQuestion={setQuestion}
+        />
       );
     }
   }

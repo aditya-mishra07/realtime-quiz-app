@@ -24,7 +24,6 @@ export class Quiz {
 
   public setCurrentQuestion(question: Question) {
     this.currentState = "question";
-    console.log(question);
     question.submissions = [];
     question.startTime = new Date().getTime();
     return question;

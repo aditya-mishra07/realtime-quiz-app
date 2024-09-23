@@ -5,12 +5,10 @@ import WebSocket from "ws";
 export class UserManager {
   private quizManager: QuizManager;
   private sockets: Set<WebSocket>;
-  private players: { username: string }[];
 
   constructor() {
     this.quizManager = QuizManager.getInstance();
     this.sockets = new Set();
-    this.players = [];
   }
 
   checkUserLeft(socket: WebSocket) {
@@ -68,6 +66,7 @@ export class UserManager {
 
       socket.on("message", (data) => {
         const message = JSON.parse(data.toString());
+        console.log(message);
         if (message.type === "started") {
           const question = this.quizManager.getQuiz(message.roomId)?.start();
           this.broadcast({
@@ -75,7 +74,6 @@ export class UserManager {
             question: question,
             roomId: message.roomId,
           });
-
           // setTimeout(() => {
           //   const users = this.quizManager
           //     .getQuiz(message.roomId)
@@ -85,6 +83,26 @@ export class UserManager {
           //     users: users,
           //   });
           // }, 30000);
+        }
+        if (message.type === "next") {
+          const question = this.quizManager.getQuiz(message.roomId)?.next();
+          console.log(question);
+          this.broadcast({
+            type: "nextQuestion",
+            question: question,
+            roomId: message.roomId,
+          });
+        }
+        if (message.type === "leaderboard") {
+          const users = this.quizManager
+            .getQuiz(message.roomId)
+            ?.showLeaderboard();
+          console.log(users);
+          this.broadcast({
+            type: "showLeaderboard",
+            users: users,
+            roomId: message.roomId,
+          });
         }
       });
     }
@@ -97,7 +115,6 @@ export class UserManager {
 
       // }
       this.submitAnswer(socket);
-      this.nextQuestion(socket);
     } else {
       console.log("incorrect id");
       socket.send(
@@ -156,23 +173,6 @@ export class UserManager {
         })
       );
     }
-  }
-
-  private nextQuestion(socket: WebSocket) {
-    socket.on("message", (data) => {
-      const message: Message = JSON.parse(data.toString());
-      if (message.type === "fetchQuestion") {
-        const question = this.quizManager.getQuiz(message.roomId)?.next();
-        socket.send(
-          JSON.stringify({
-            type: "nextQuestion",
-            userId: message.userId,
-            roomId: message.roomId,
-            question: question,
-          })
-        );
-      }
-    });
   }
 
   private getActiveUsers(message: Message) {
