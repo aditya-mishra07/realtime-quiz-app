@@ -5,7 +5,7 @@ type questionCardProps = {
 
 const QuestionCard = ({ title }: questionCardProps) => {
   return (
-    <Card className=" text-center rounded-2xl shadow-xl">
+    <Card className=" text-center rounded-2xl shadow-xl w-24">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

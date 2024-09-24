@@ -64,7 +64,9 @@ const Leaderboard = ({
               <div className=" bg-white rounded-lg shadow-sm flex justify-between gap-5 p-2 py-4 mx-6 my-2 pl-4 w-[32rem] h-[4rem] overflow-hidden">
                 <h2 className="font-semibold text-xl w-8">{++index}.</h2>
                 <h2 className="font-semibold text-xl w-40">{user.username}</h2>
-                <h2 className="font-semibold text-xl w-24">{user.points}</h2>
+                <h2 className="font-semibold text-xl w-24">
+                  {Math.round(user.points)}
+                </h2>
                 <div className=" w-8">
                   <FaUser className="text-black text-2xl" />
                 </div>

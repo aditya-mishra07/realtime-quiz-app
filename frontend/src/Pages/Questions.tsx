@@ -6,6 +6,8 @@ import CardButton from "@/components/Question/CardButton";
 import SubmittedLoading from "@/components/Loading/SubmittedLoading";
 import Wrong from "./Wrong";
 import Right from "./Right";
+import useCountdown from "@/hooks/useCountdown";
+import { count } from "console";
 
 type questionProps = {
   question: Question | null;
@@ -31,7 +33,7 @@ export default function Questions({
     userId: userId,
     questionId: question?.id,
   });
-
+  const countdown = useCountdown(20);
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [timeOver, setTimeOver] = useState<boolean>(false);
@@ -40,12 +42,8 @@ export default function Questions({
   const [position, setPosition] = useState<number | null>(null);
 
   useEffect(() => {
-    console.log(submitted);
-  }, []);
-  useEffect(() => {
     const timeout = setTimeout(() => {
       if (!submitted) {
-        console.log("not submitted!");
         socket?.send(
           JSON.stringify({
             type: "not_submitted",
@@ -134,8 +132,9 @@ export default function Questions({
   if (!submitted && !timeOver) {
     return (
       <div className="flex flex-col h-screen">
-        <div className="mx-4 my-2">
+        <div className="mx-4 my-2 flex justify-center">
           <QuestionCard title={question?.text} />
+          <div>CountDown: {countdown}</div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 p-6 m-20 mx-60">
           {question?.options.map((option, index) => (

@@ -22,7 +22,6 @@ const AdminQuestion = ({ question, roomId, socket, setQuestion }: Props) => {
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
       if (message.type === "nextQuestion") {
-        console.log("message");
         setQuestion(message.question);
       }
       if (message.type === "showLeaderboard") {
