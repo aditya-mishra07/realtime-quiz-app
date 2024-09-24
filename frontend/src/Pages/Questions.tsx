@@ -38,8 +38,12 @@ export default function Questions({
   const [isCorrect, setisCorrect] = useState<boolean | null>(null);
   const [userinfo, setUserInfo] = useState<User | null>(null);
   const [position, setPosition] = useState<number | null>(null);
+
   useEffect(() => {
-    setTimeout(() => {
+    console.log(submitted);
+  }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
       if (!submitted) {
         console.log("not submitted!");
         socket?.send(
@@ -52,7 +56,11 @@ export default function Questions({
         );
       }
       setTimeOver(true);
-    }, 30000);
+    }, 20000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, []);
 
   useEffect(() => {

@@ -97,7 +97,6 @@ export class UserManager {
           const users = this.quizManager
             .getQuiz(message.roomId)
             ?.showLeaderboard();
-          console.log(users);
           this.broadcast({
             type: "showLeaderboard",
             users: users,

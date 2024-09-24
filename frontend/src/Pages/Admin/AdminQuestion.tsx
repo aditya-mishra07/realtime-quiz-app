@@ -89,7 +89,16 @@ const AdminQuestion = ({ question, roomId, socket, setQuestion }: Props) => {
       </div>
     );
   } else {
-    return <Leaderboard users={users} />;
+    return (
+      <Leaderboard
+        users={users}
+        roomId={roomId}
+        socket={socket}
+        question={question}
+        setQuestion={setQuestion}
+        isAdmin={true}
+      />
+    );
   }
 };
 

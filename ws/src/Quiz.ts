@@ -18,7 +18,7 @@ export class Quiz {
     this.users = [];
     this.currentQuestion = 0;
     this.currentState = "not_started";
-    this.questionTimer = 30;
+    this.questionTimer = 20;
     this.result = {};
   }
 
@@ -112,7 +112,7 @@ export class Quiz {
       user.roundPoints =
         (1 -
           (new Date().getTime() - question?.startTime) /
-            1000 /
+            10000 /
             (this.questionTimer * 2)) *
         1000;
       user.points += user.roundPoints;

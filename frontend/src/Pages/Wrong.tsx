@@ -1,8 +1,9 @@
 import PositionEnding from "@/components/Result/PositionEnding";
 import { HiOutlineXCircle } from "react-icons/hi";
 import { useState, useEffect } from "react";
-import { Question } from "@/Models/quiz";
+import { Question, User } from "@/Models/quiz";
 import Questions from "./Questions";
+import Leaderboard from "./Leaderboard";
 
 type WrongProps = {
   position: number;
@@ -20,27 +21,19 @@ export default function Wrong({
   const suffix = PositionEnding(position);
   const [nextQuestion, setNextQuestion] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question | null>(null);
-
-  useEffect(() => {
-    socket?.send(
-      JSON.stringify({
-        type: "fetchQuestion",
-        roomId: roomId,
-        userId: userId,
-      })
-    );
-    setTimeout(() => {
-      setNextQuestion(true);
-    }, 10000);
-  }, []);
-
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   useEffect(() => {
     if (!socket) return;
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
       if (message.type === "nextQuestion") {
-        console.log(message);
         setQuestion(message.question);
+        setNextQuestion(true);
+      }
+      if (message.type === "showLeaderboard") {
+        setUsers(message.users);
+        setShowLeaderboard(true);
       }
     };
 
@@ -51,7 +44,7 @@ export default function Wrong({
     };
   }, [socket]);
 
-  if (!nextQuestion) {
+  if (!nextQuestion && !showLeaderboard) {
     return (
       <div className=" h-screen bg-pink-600">
         <div className="flex flex-col justify-center items-center">
@@ -81,6 +74,19 @@ export default function Wrong({
         question={question}
         roomId={roomId}
         socket={socket}
+        userId={userId}
+      />
+    );
+  }
+
+  if (showLeaderboard && users) {
+    console.log(showLeaderboard);
+    return (
+      <Leaderboard
+        socket={socket}
+        isAdmin={false}
+        roomId={roomId}
+        users={users}
         userId={userId}
       />
     );

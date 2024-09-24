@@ -1,9 +1,10 @@
 import { HiCheckCircle } from "react-icons/hi";
 import { BsFire } from "react-icons/bs";
-import { Question, User } from "@/types";
+import { Question, User } from "@/Models/quiz";
 import PositionEnding from "@/components/Result/PositionEnding";
 import { useEffect, useState } from "react";
 import Questions from "./Questions";
+import Leaderboard from "./Leaderboard";
 
 type RightProps = {
   userinfo: User;
@@ -23,27 +24,19 @@ export default function Right({
   const suffix = PositionEnding(position);
   const [nextQuestion, setNextQuestion] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question | null>(null);
-
-  useEffect(() => {
-    socket?.send(
-      JSON.stringify({
-        type: "fetchQuestion",
-        roomId: roomId,
-        userId: userId,
-      })
-    );
-    setTimeout(() => {
-      setNextQuestion(true);
-    }, 10000);
-  }, []);
-
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   useEffect(() => {
     if (!socket) return;
     const handleSocketMessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
       if (message.type === "nextQuestion") {
-        console.log(message);
         setQuestion(message.question);
+        setNextQuestion(true);
+      }
+      if (message.type === "showLeaderboard") {
+        setUsers(message.users);
+        setShowLeaderboard(true);
       }
     };
 
@@ -54,7 +47,7 @@ export default function Right({
     };
   }, [socket]);
 
-  if (!nextQuestion) {
+  if (!nextQuestion && !showLeaderboard) {
     return (
       <div className="h-screen bg-green-600 font-sans">
         <div className=" flex flex-col justify-center items-center">
@@ -74,7 +67,7 @@ export default function Right({
           </div>
 
           <div className="bg-green-800 text-white text-2xl font-semibold p-3 px-20 mt-5 rounded-sm">
-            +{userinfo.points}
+            +{Math.round(userinfo.points)}
           </div>
           <h5 className="text-white text-lg font-semibold mt-2">
             You're in {position}
@@ -91,6 +84,19 @@ export default function Right({
         question={question}
         roomId={roomId}
         socket={socket}
+        userId={userId}
+      />
+    );
+  }
+
+  if (showLeaderboard && users) {
+    console.log(showLeaderboard);
+    return (
+      <Leaderboard
+        socket={socket}
+        isAdmin={false}
+        roomId={roomId}
+        users={users}
         userId={userId}
       />
     );
