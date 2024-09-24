@@ -115,7 +115,12 @@ export class Quiz {
             10000 /
             (this.questionTimer * 2)) *
         1000;
-      user.points += user.roundPoints;
+      if (user.streak && user.streak?.length > 1) {
+        user.points +=
+          user.roundPoints + user.roundPoints * 0.2 * user.streak.length;
+      } else {
+        user.points = user.roundPoints;
+      }
     }
     this.currentState = "leaderboard";
   }
