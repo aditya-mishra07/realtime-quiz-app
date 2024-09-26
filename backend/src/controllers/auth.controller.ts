@@ -143,7 +143,7 @@ const signout = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .clearCookie("accessToken")
     .clearCookie("refreshToken")
-    .json({ message: "User logged out" });
+    .json({ loggedOut: true });
 });
 
 const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {

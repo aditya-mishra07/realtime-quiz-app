@@ -46,3 +46,13 @@ export const checkAuthAPI = async () => {
     console.log(error);
   }
 };
+
+export const signoutAPI = async () => {
+  try {
+    const res = await axios.get<{ loggedOut: boolean }>(api + "logout", {
+      withCredentials: true,
+    });
+
+    return res;
+  } catch (error) {}
+};

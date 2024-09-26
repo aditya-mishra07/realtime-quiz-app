@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WaitRoom from "../WaitRoom";
 import { useSocket } from "@/hooks/useSocket.ts";
 import { nanoid } from "nanoid";
+import Logout from "@/components/Admin/Logout";
 
 export const Admin = () => {
   const [data, setData] = useState<Quiz[] | null>(null);
@@ -105,6 +106,7 @@ export const Admin = () => {
         <Card className="w-[850px]">
           <CardHeader className="text-center">
             <CardTitle className="text-purple-600">My Quizzes</CardTitle>
+            <Logout />
           </CardHeader>
           <CardContent>
             {data &&

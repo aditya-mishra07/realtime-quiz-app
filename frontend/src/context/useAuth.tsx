@@ -1,4 +1,9 @@
-import { checkAuthAPI, signinAPI, signupAPI } from "@/Services/authService";
+import {
+  checkAuthAPI,
+  signinAPI,
+  signoutAPI,
+  signupAPI,
+} from "@/Services/authService";
 import { useContext, useEffect, useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -38,7 +43,16 @@ export const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  const signout = () => {};
+  const signout = async () => {
+    try {
+      const res = await signoutAPI();
+      if (res?.data.loggedOut == true) {
+        navigate("/signup");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ signin, signup, signout }}>
