@@ -6,6 +6,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import ForgottenPassword from "@/Pages/Auth/ForgottenPassword";
 import ProtectedRoute from "./ProtectedRoute";
+import VerifyEmail from "@/Pages/Auth/VerifyEmail";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
             <Admin />,
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/verifyemail",
+        element: <VerifyEmail />,
       },
       {
         path: "/signin",

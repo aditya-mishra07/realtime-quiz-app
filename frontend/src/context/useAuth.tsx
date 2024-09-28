@@ -1,5 +1,6 @@
 import {
   checkAuthAPI,
+  emailVerifyAPI,
   signinAPI,
   signoutAPI,
   signupAPI,
@@ -11,6 +12,7 @@ type AuthContextType = {
   signin: (username: string, password: string) => void;
   signup: (username: string, password: string) => void;
   signout: () => void;
+  verifyemail: (token: string) => void;
 };
 
 type Props = {
@@ -47,15 +49,23 @@ export const AuthProvider = ({ children }: Props) => {
     try {
       const res = await signoutAPI();
       if (res?.data.loggedOut == true) {
-        navigate("/signup");
+        navigate("/signin");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const verifyemail = async (token: string) => {
+    try {
+      await emailVerifyAPI(token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ signin, signup, signout }}>
+    <AuthContext.Provider value={{ signin, signup, signout, verifyemail }}>
       {children}
     </AuthContext.Provider>
   );

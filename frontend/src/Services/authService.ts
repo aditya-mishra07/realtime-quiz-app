@@ -1,4 +1,4 @@
-import { AdminProfileToken } from "@/Models/admin";
+import { AdminEmailVerifyToken, AdminProfileToken } from "@/Models/admin";
 import axios from "axios";
 const api = "http://localhost:3000/api/v1/admin/auth/";
 
@@ -53,6 +53,21 @@ export const signoutAPI = async () => {
       withCredentials: true,
     });
 
+    return res;
+  } catch (error) {}
+};
+
+export const emailVerifyAPI = async (token: string) => {
+  try {
+    const res = await axios.post<AdminEmailVerifyToken>(
+      api + "verify-email",
+      {
+        token,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     return res;
   } catch (error) {}
 };
