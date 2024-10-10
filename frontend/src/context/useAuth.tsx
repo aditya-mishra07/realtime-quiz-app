@@ -1,11 +1,11 @@
 import {
-  checkAuthAPI,
+  // checkAuthAPI,
   emailVerifyAPI,
   signinAPI,
   signoutAPI,
   signupAPI,
 } from "@/Services/authService";
-import { useContext, useEffect, useState, createContext } from "react";
+import { useContext, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {

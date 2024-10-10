@@ -1,9 +1,9 @@
-interface Option {
-  id: number;
-  text: string;
-  votes: number;
-  questionId: number;
-}
+// interface Option {
+//   id: number;
+//   text: string;
+//   votes: number;
+//   questionId: number;
+// }
 
 export interface Quiz {
   id: number;

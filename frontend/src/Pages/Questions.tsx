@@ -7,7 +7,6 @@ import SubmittedLoading from "@/components/Loading/SubmittedLoading";
 import Wrong from "./Wrong";
 import Right from "./Right";
 import useCountdown from "@/hooks/useCountdown";
-import { count } from "console";
 
 type questionProps = {
   question: Question | null;

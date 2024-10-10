@@ -1,5 +1,5 @@
 import WebSocketService from "@/classes/WebSocketService";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useSocket = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
