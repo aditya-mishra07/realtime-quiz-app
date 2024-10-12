@@ -1,0 +1,11 @@
+version: "3.4"
+services:
+  quiz-app:
+    image: quiz-app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 5173:8080
