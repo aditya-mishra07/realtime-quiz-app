@@ -23,11 +23,11 @@ export const errorHandler = (
       );
     }
 
-    return res.status(statusCode).send({ errors });
+    return res.status(statusCode).json({ errors });
   }
 
   console.error(JSON.stringify(err, null, 2));
   return res
     .status(500)
-    .send({ errors: [{ message: "Something went wrong" }] });
+    .json({ errors: [{ message: "Something went wrong" }] });
 };

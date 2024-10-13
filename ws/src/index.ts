@@ -3,7 +3,7 @@ import WebSocket, { WebSocketServer } from "ws";
 import { UserManager } from "./managers/UserManager";
 
 const app = express();
-const httpServer = app.listen(8080);
+const httpServer = app.listen(8000);
 
 const wss = new WebSocketServer({ server: httpServer });
 

@@ -7,7 +7,7 @@ import {
 } from "@/Services/authService";
 import { useContext, createContext } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "sonner";
 type AuthContextType = {
   signin: (username: string, password: string) => void;
   signup: (username: string, password: string) => void;
@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }: Props) => {
       const res = await signinAPI(username, password);
       if (res) {
         navigate("/admin");
+        toast.success(`${username} has signed in!`);
       }
     } catch (error) {
       console.log(error);

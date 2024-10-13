@@ -1,5 +1,6 @@
 import { AdminEmailVerifyToken, AdminProfileToken } from "@/Models/admin";
 import axios from "axios";
+import { toast } from "sonner";
 const api = "http://localhost:3000/api/v1/admin/auth/";
 
 export const signinAPI = async (username: string, password: string) => {
@@ -15,9 +16,9 @@ export const signinAPI = async (username: string, password: string) => {
       }
     );
     return res;
-  } catch (error) {
-    //TODO: handleError
-    console.log(error);
+  } catch (error: any) {
+    const message = error.response.data.errors[0].message;
+    toast.error(message);
   }
 };
 
@@ -28,8 +29,9 @@ export const signupAPI = async (username: string, password: string) => {
       password: password,
     });
     return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    const message = error.response.data.errors[0].message;
+    toast.error(message);
   }
 };
 
@@ -42,8 +44,9 @@ export const checkAuthAPI = async () => {
       }
     );
     return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    const message = error.response.data.errors[0].message;
+    toast.error(message);
   }
 };
 
@@ -54,7 +57,10 @@ export const signoutAPI = async () => {
     });
 
     return res;
-  } catch (error) {}
+  } catch (error: any) {
+    const message = error.response.data.errors[0].message;
+    toast.error(message);
+  }
 };
 
 export const emailVerifyAPI = async (token: string) => {
@@ -69,5 +75,8 @@ export const emailVerifyAPI = async (token: string) => {
       }
     );
     return res;
-  } catch (error) {}
+  } catch (error: any) {
+    const message = error.response.data.errors[0].message;
+    toast.error(message);
+  }
 };

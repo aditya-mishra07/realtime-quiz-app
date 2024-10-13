@@ -21,11 +21,10 @@ app.use(
 
 app.use(express.json());
 
-app.use(errorHandler);
-
 app.use("/api/v1/admin/quizes", quizRouter);
 app.use("/api/v1/admin/auth", authRouter);
 app.use("/api/v1/openai", openaiRouter);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
